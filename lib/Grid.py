@@ -82,7 +82,7 @@ class Grid():
     def set(self, x, y, obj):
         ''' Sets an object in a particular place on the grid. '''
 
-        grid[x][y] = obj
+        self.grid[x][y] = obj
 
 
     def read(self, TLC, BRC):

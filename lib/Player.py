@@ -7,14 +7,15 @@ from Viewport import *
 
 class Player(Object):
     def __init__(self, x, y, grid):
-        Object.init(x, y)
+        Object.__init__(self, x, y, '@')
         self.grid = grid
+        self.grid.set(x, y, self)
 
     def move(self, direction):
         nextObj = null
 
         if direction == 'n':
-            nextObj = grid.read(self.y - 1)
+            nextObj = self.grid.read(self.y - 1)
 
         if nextObj != null:
             if nextObj.getType() == 'd':
@@ -22,4 +23,4 @@ class Player(Object):
             elif nextObj.getType() == '.':
                 xOffset = self.getX()
                 yOffset = self.getY() + 1
-                grid.moveObj(xOffset, yOffset, self) 
+                self.grid.moveObj(xOffset, yOffset, self) 

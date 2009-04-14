@@ -21,6 +21,8 @@ class Game():
         #grid.replace(base1)        
         #grid.replace(base2)       
 
+        self.player = Player(2, 2, self.grid)
+
     def mainLoop(self):
         done = False
         refreshCount = 0
