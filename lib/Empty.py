@@ -5,8 +5,8 @@ class Empty():
     anything, other than the fact that it is empty. 
     Doesn't even know its own coords. '''
 
-    def __init__(self):
-        self.setType(".") 
+    def __init__(self, type):
+        self.setType(type) 
 	
     def setType(self, type):
         self.type = type

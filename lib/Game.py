@@ -22,7 +22,15 @@ class Game():
         #grid.replace(base2)       
 
         self.player = Player(2, 2, self.grid)
-
+        self.vp = Viewport(self.grid)
+        
+    def clearScreen(self):
+        if os.name == 'posix':
+            os.system('clear')
+        elif os.name in ("nt", "dos", "ce"):
+            # DOS/Windows
+            os.system('CLS')
+            
     def mainLoop(self):
         done = False
         refreshCount = 0
@@ -30,18 +38,8 @@ class Game():
         # Main game loop
         while not done:
             if refreshCount == REFRESH_RATE:
-                if os.name == 'posix':
-                    os.system('clear')
-                elif os.name in ("nt", "dos", "ce"):
-                # DOS/Windows
-                    os.system('CLS')
-
-                for row in self.grid.readArea([0,0], [10,10]):
-                    for item in row:
-                        print item,
-                    # newline
-                    print 
-                
+                self.clearScreen()
+                self.vp.display()
                 refreshCount = 0 
 
             for event in pygame.event.get():
@@ -56,7 +54,6 @@ class Game():
                         self.player.move('e')
                     elif event.key == K_a:
                         self.player.move('w')
-
 
             refreshCount += 1
 

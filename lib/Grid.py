@@ -11,26 +11,14 @@ class Grid():
     all times of the game. It will vary in size based on how many
     players there are, and the size of map selected. A small grid
     for 2 players will be different from a small grid for 4 players,
-    for example. 
-    
-    Units on the grid can have several different types of status: 
-    
-    d - dirt
-    e - empty
-    b1 - player 1's base
-    b2 - player 2's base (etc.)
-    hw - horizontal wall
-    vw - vertical wall
-    blcw - bottom left corner wall
-    brcw - bottom right corner wall
-    tlcw - top left corner wall 
-    trcw - top right corner wall '''
+    for example. s
+    '''
     
     def __init__(self, gridSize, pCount, fill): 
         '''gridSize is the size of the grid defined by the variables passed
         to this method. This variable is used to make the number of
         rows and the number of columns. The grid is a square, so if 
-        gridSize = 20, then the grid will be 20x20. The default status
+        gridSize = 20, then the grid will be 20col20. The default status
         of a unit on the grid is "d", which stands for dirt. This is
         given in the "fill" argument.
         
@@ -42,6 +30,7 @@ class Grid():
         self.grid = []
             
         rowCounter = 0
+        # Fill the grid with rows
         while rowCounter < gridSize:
             row = []
 
@@ -55,7 +44,7 @@ class Grid():
             self.grid.append(row)
             rowCounter += 1
 
-    def moveObj(self, newX, newY, obj):
+    def moveObj(self, newCol, newRow, obj):
         ''' Won't do any error-checking of its own, because it's assuming
         whatever is calling it already did the moving math. 
         
@@ -65,54 +54,24 @@ class Grid():
         '''
         
         # Make an empty in its place on the grid
-        oldX = obj.getX()
-        oldY = obj.getY()
-        empty = Empty() 
-        self.set(oldX, oldY, empty)
+        oldCol = obj.getCol()
+        oldRow = obj.getRow()
+        empty = Empty(".") 
+        self.set(oldCol, oldRow, empty)
         
         # Move the object
-        obj.setCoords(newX, newY)
-        self.set(newX, newY, obj)
+        obj.setCoords(newCol, newRow)
+        self.set(newCol, newRow, obj)
 
-    def set(self, x, y, obj):
+    def set(self, col, row, obj):
         ''' Sets an object in a particular place on the grid. '''
 
-        self.grid[y][x] = obj
+        self.grid[col][row] = obj
 
-    def read(self, x, y):
+    def get(self, col, row):
         ''' Returns the object at the location specified. '''
 
-        return self.grid[x][y]
-
-    def readArea(self, TLC, BRC):
-        ''' Method for reading data off of the grid. Takes the top left
-        coordinate to the bottom right coordinate,
-        and returns the values of all of the list items in between those
-        two coordinates in the form of a list.'''
-        
-        output = []
-        y = TLC[1] 
-        brx = BRC[0]
-        bry = BRC[1]
-        
-        while y <= bry:
-            x = TLC[0]
-            row = []
-            
-            if y < 0 or y >= len(self.grid):
-                while x <= brx:
-                    row.append('f')
-                    x += 1
-            else:
-                while x <= brx:
-                    # if x is off the grid (smaller than 0, append fog)
-                    if x < 0 or x >= len(self.grid): row.append('f')
-                    else: row.append(self.grid[y][x])
-                    x += 1
-            output.append(row)
-            y += 1
-        
-        return output
+        return self.grid[col][row]
             
     def replace(self, obj):   
         ''' Method that abstracts the basic replacing of objects on the 

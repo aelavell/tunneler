@@ -6,32 +6,32 @@ from Base import *
 from Viewport import *
 
 class Player(Object):
-    def __init__(self, x, y, grid):
-        Object.__init__(self, x, y, '@')
+    def __init__(self, col, row, grid):
+        Object.__init__(self, col, row, '@')
         self.grid = grid
-        self.grid.set(x, y, self)
+        self.grid.set(col, row, self)
 
     def move(self, direction):
         nextObj = 'null'
-        x = self.getX()
-        y = self.getY() 
-
+        col = self.getCol() 
+        row = self.getRow()
+        
         if direction == 'n':
-            y -= 1
-            nextObj = self.grid.read(x,y)
+            row -= 1
+            nextObj = self.grid.get(col,row)
         elif direction == 's':
-            y += 1
-            nextObj = self.grid.read(x,y)
+            row += 1
+            nextObj = self.grid.get(col,row)
         elif direction == 'e': 
-            x += 1
-            nextObj = self.grid.read(x,y)
+            col += 1
+            nextObj = self.grid.get(col,row)
         elif direction == 'w':
-            x -= 1
-            nextObj = self.grid.read(x,y)
+            col -= 1
+            nextObj = self.grid.get(col,row)
 
         if nextObj != 'null':
             if nextObj.getType() == 'd':
                 nextObj.decrementHealth()
             elif nextObj.getType() == '.':
-                self.grid.moveObj(x, y, self) 
+                self.grid.moveObj(col, row, self) 
             

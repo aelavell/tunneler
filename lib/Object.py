@@ -3,22 +3,23 @@ from Empty import *
 
 class Object(Empty):
     def __init__(self, col, row, type):
-        self.x = row 
-        self.y = col 
+        self.col = row 
+        self.row = col 
         self.coords = [col, row]
         self.setType(type)
 
     def getCoords(self):
         return self.coords
 
-    def setCoords(self, x, y):
-        self.x = x
-        self.y = y
-        self.coords = [x,y]
+    def setCoords(self, col, row):
+        self.col = col
+        self.row = row
+        self.coords = [col,row]
 
-    def getX(self):
-        return self.x
+    def getCol(self):
+        return self.col
 
-    def getY(self):
-        return self.y
+    def getRow(self):
+        return self.row
+        
 
