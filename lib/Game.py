@@ -36,7 +36,8 @@ class Game():
                 # DOS/Windows
                     os.system('CLS')
 
-                for row in self.grid.read([0,0], [10,10]):
+                for row in self.grid.readArea([0,0], [10,10]):
+                    # newline
                     print 
                     for item in row:
                         print item,
@@ -44,13 +45,17 @@ class Game():
                 refreshCount = 0 
 
             for event in pygame.event.get():
-                if (event.type == KEYUP) or (event.type == KEYDOWN):
+                if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         done = True
-                    elif event.key == K_a:
-                        print "wong"
                     elif event.key == K_w:
-                        pass
+                        self.player.move('n') 
+                    elif event.key == K_s:
+                        self.player.move('s')
+                    elif event.key == K_d:
+                        self.player.move('e')
+                    elif event.key == K_a:
+                        self.player.move('w')
 
 
             refreshCount += 1

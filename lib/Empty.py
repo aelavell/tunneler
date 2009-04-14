@@ -15,4 +15,4 @@ class Empty():
         return self.type
     
     def __str__(self):
-        return self.type 
+        return self.getType() 

@@ -57,9 +57,6 @@ class Grid():
             self.grid.append(newRow)
             counter += 1
 
-    def read(self, x, y):
-        return self.grid[x][y]
-
     def moveObj(self, newX, newY, obj):
         ''' Won't do any error-checking of its own, because it's assuming
         whatever is calling it already did the moving math. 
@@ -72,7 +69,7 @@ class Grid():
         # Make an empty in its place on the grid
         oldX = obj.getX()
         oldY = obj.getY()
-        empty = Object(x, y, '.')
+        empty = Object(oldX, oldY, '.')
         self.set(oldX, oldY, empty)
         
         # Move the object
@@ -82,10 +79,14 @@ class Grid():
     def set(self, x, y, obj):
         ''' Sets an object in a particular place on the grid. '''
 
-        self.grid[x][y] = obj
+        self.grid[y][x] = obj
 
+    def read(self, x, y):
+        ''' Returns the object at the location specified. '''
 
-    def read(self, TLC, BRC):
+        return self.grid[x][y]
+
+    def readArea(self, TLC, BRC):
         ''' Method for reading data off of the grid. Takes the top left
         coordinate to the bottom right coordinate,
         and returns the values of all of the list items in between those
