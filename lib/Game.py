@@ -37,10 +37,10 @@ class Game():
                     os.system('CLS')
 
                 for row in self.grid.readArea([0,0], [10,10]):
-                    # newline
-                    print 
                     for item in row:
                         print item,
+                    # newline
+                    print 
                 
                 refreshCount = 0 
 
