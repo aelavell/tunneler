@@ -32,6 +32,17 @@ class Player(Object):
         if nextObj != 'null':
             if nextObj.getType() == 'd':
                 nextObj.decrementHealth()
-            elif nextObj.getType() == '.':
+
+            
+            # This is an IF instead of an ELIF because 
+            # if the player just crushed a piece of dirt, it will
+            # become a ., and so he can move. This code may change,
+            # as it is dependent on order of the statements.
+            if nextObj.getType() == '.':
                 self.grid.moveObj(col, row, self) 
+            elif nextObj.getType() == 'f':
+                # MUST FIX
+                # Needs code to push row or col back to its
+                # original value
+                pass
             
