@@ -2,14 +2,13 @@ from Constants import *
 from Object import *
 
 class Dirt(Object):
-    def __init__(self, x, y):
-        Object.init(x, y)
-        self.setType('d') 
+    def __init__(self, col, row):
+        Object.__init__(self, col, row, 'd')
         self.health = 3
 
     def decrementHealth(self):
-        health -= 1
-        if health <= 0:
+        self.health -= 1
+        if self.health <= 0:
             self.die()
 
     def die(self):

@@ -41,21 +41,19 @@ class Grid():
         row = []
         self.grid = []
             
-        empty = Empty()
-		
-        counter = 0
-        # Fill each row
-        while counter < gridSize:
-            row.append(empty)
-            counter += 1
+        rowCounter = 0
+        while rowCounter < gridSize:
+            row = []
+
+            # Fill the row with columns 
+            colCounter = 0
+            while colCounter < gridSize:
+                dirt = Dirt(colCounter, rowCounter) 
+                row.append(dirt)
+                colCounter += 1
         
-        counter = 0
-        # Fill the grid with rows
-        while counter < gridSize:
-            # I'm an idiot
-            newRow = copy.deepcopy(row)
-            self.grid.append(newRow)
-            counter += 1
+            self.grid.append(row)
+            rowCounter += 1
 
     def moveObj(self, newX, newY, obj):
         ''' Won't do any error-checking of its own, because it's assuming
@@ -69,7 +67,7 @@ class Grid():
         # Make an empty in its place on the grid
         oldX = obj.getX()
         oldY = obj.getY()
-        empty = Object(oldX, oldY, '.')
+        empty = Empty() 
         self.set(oldX, oldY, empty)
         
         # Move the object
