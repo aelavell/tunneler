@@ -1,6 +1,7 @@
 from Constants import *
+from Empty import *
 
-class Object():
+class Object(Empty):
     def __init__(self, x, y, type):
         self.x = x
         self.y = y
@@ -21,11 +22,3 @@ class Object():
     def getY(self):
         return self.y
 
-    def setType(self, type):
-        self.type = type
-
-    def getType(self):
-        return self.type
-    
-    def __str__(self):
-        return type

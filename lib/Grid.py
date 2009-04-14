@@ -40,11 +40,13 @@ class Grid():
         
         row = []
         self.grid = []
-        
+            
+        empty = Empty()
+		
         counter = 0
         # Fill each row
         while counter < gridSize:
-            row.append(str(fill))
+            row.append(empty)
             counter += 1
         
         counter = 0
