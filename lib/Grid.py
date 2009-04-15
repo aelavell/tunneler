@@ -45,33 +45,53 @@ class Grid():
             rowCounter += 1
 
     def moveObj(self, newCol, newRow, obj):
-        ''' Won't do any error-checking of its own, because it's assuming
-        whatever is calling it already did the moving math. 
-        
-        Movable objects can only move onto empty space. They can't move
-        onto dirt, or walls, or other movable objects. 
-        So that will leave an empty space in their wake.
+        ''' 
+        Movable objects can only move onto empty space. 
+        They can't move onto dirt, or walls, or other movable 
+        objects. They can't move off the grid.
+        They leave an empty space in their wake.
         '''
         
-        # Make an empty in its place on the grid
-        oldCol = obj.getCol()
-        oldRow = obj.getRow()
-        empty = Empty(EMPTY) 
-        self.set(oldCol, oldRow, empty)
-        
-        # Move the object
-        obj.setCoords(newCol, newRow)
-        self.set(newCol, newRow, obj)
+        # Make sure the move is in-bounds
+        if self.isInBounds(newCol, newRow):
+            # Make an empty in its place on the grid
+            oldCol = obj.getCol()
+            oldRow = obj.getRow()
+            empty = Empty(EMPTY) 
+            self.set(oldCol, oldRow, empty)
+            
+            # Move the object
+            obj.setCoords(newCol, newRow)
+            self.set(newCol, newRow, obj)
 
     def set(self, col, row, obj):
-        ''' Sets an object in a particular place on the grid. '''
-
-        self.grid[col][row] = obj
+        ''' Puts an object in a particular place on the grid,
+        if in bounds. '''
+        
+        if self.isInBounds(col, row):
+            self.grid[col][row] = obj
+        else:
+            print "Could not set object at ", col, " ", row
 
     def get(self, col, row):
-        ''' Returns the object at the location specified. '''
-
-        return self.grid[col][row]
+        ''' Returns the object at the location specified, if
+        it is in the Grid. Otherwise returns fog, because
+        it is out of the bounds of the Grid. '''
+        
+        if self.isInBounds(col, row):
+            return self.grid[col][row]
+        else:
+            fog = Empty(FOG)
+            return fog
+            
+    def isInBounds(self, col, row):
+        ''' Encapsulates a boolean test to see whether or not
+        a set of coordinates in the bounds of the grid. '''
+        
+        if col >= 0 and col < GRID_SIZE and row > 0 and row < GRID_SIZE:
+            return True
+        else:
+            return False
             
     def replace(self, obj):   
         ''' Method that abstracts the basic replacing of objects on the 

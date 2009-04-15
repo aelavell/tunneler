@@ -11,16 +11,31 @@ class Viewport():
         self.player = player
     
     def display(self):
+        ''' Displays a view centered on the player.'''
+        
         row = self.player.getRow() - (DISPLAY_SIZE / 2)
         maxRow = self.player.getRow() + (DISPLAY_SIZE / 2)
         maxCol = self.player.getCol() + (DISPLAY_SIZE / 2)
         while row <= maxRow:
-            col = self.player.getCol() - (DISPLAY_SIZE / 2)
-            while col <= maxCol:
-                print self.grid.get(col, row),
-                col += 1
+            # If the row is within bounds of the grid
+            if row > 0 and row < GRID_SIZE:
+                col = self.player.getCol() - (DISPLAY_SIZE / 2)
+                while col <= maxCol:
+                    if col < 0:
+                        print FOG,
+                    else:
+                        print self.grid.get(col, row),
+                    col += 1
+                    
+            # The row is fog, so just fill 'er up
+            else:
+                counter = 0
+                while counter < DISPLAY_SIZE:
+                    print FOG,
+                    counter += 1
                 
             # newline
             print 
-            
+                
             row += 1
+            
