@@ -9,7 +9,26 @@ class Player(Object):
     def __init__(self, col, row, grid):
         Object.__init__(self, col, row, P1)
         self.grid = grid
-        self.grid.set(col, row, self)
+        under = self.grid.set(col, row, self)
+        # object that is under the player initially
+        self.setUnderneath(under)
+        
+    def setUnderneath(self, obj):
+        ''' The player will always be on top of something
+        in the grid - be it an empty space, or the floor of 
+        a base, it will have to be remembered so it can be
+        placed back onto the grid after the player has moved
+        on. Also, when the player is on the floor of the base,
+        special things happen to him, such as replenishment
+        of health and energy. '''
+        
+        self.underneath = obj
+        
+    def getUnderneath(self):
+        ''' Returns the part of the grid that is currently
+        underneath the player. '''
+        
+        return self.underneath
 
     def move(self, direction):
         nextObj = 'null'
@@ -41,4 +60,9 @@ class Player(Object):
                 pass
             elif nextObj.getType() == H_WALL:
                 pass
+                
+    def update(self):
+        # placeholder for healing / energy replacement
+        if self.underneath.type() == B1:
+            pass
             

@@ -46,11 +46,8 @@ class Grid():
 
     def moveObj(self, newCol, newRow, obj):
         ''' 
-        Movable objects can only move onto empty space. 
-        They can't move onto dirt, or walls, or other movable 
-        objects. They can't move off the grid.
-        They leave an empty space in their wake.
-        
+        Handles moving an object around the grid,
+        checking if it is in bounds.
         Also handles the actual setting of the object's new
         col and row.
         '''
@@ -60,23 +57,38 @@ class Grid():
             # Make an empty space in object's place on the grid
             oldCol = obj.getCol()
             oldRow = obj.getRow()
-            empty = Empty(EMPTY) 
-            self.set(oldCol, oldRow, empty)
+            # This was under the object, return it to the grid
+            underneath = obj.getUnderneath()
+            self.set(oldCol, oldRow, underneath)
             
             # Move the object
             # Update the object's coords
             obj.setCoords(newCol, newRow)
+            # Get what the object will be on top of now
+            newUnder = self.get(newCol, newRow)
+            # Add it to the object
+            obj.setUnderneath(newUnder)
             # Put the object in the new place on the grid
             self.set(newCol, newRow, obj)
 
     def set(self, col, row, obj):
         ''' Puts an object in a particular place on the grid,
-        if in bounds. '''
+        if in bounds. 
+        
+        Returns the old object that was on the Grid before the
+        argument object was set down. If off the grid, returns
+        fog. '''
         
         if self.isInBounds(col, row):
+            # Get the old object
+            oldObj = self.grid[col][row]
+            # Set the new one down
             self.grid[col][row] = obj
+            return oldObj
         else:
             print "Could not set object at ", col, " ", row
+            fog = Empty(FOG)
+            return fog
 
     def get(self, col, row):
         ''' Returns the object at the location specified, if
