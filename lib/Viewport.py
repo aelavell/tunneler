@@ -6,14 +6,17 @@ from Base import *
 from Viewport import *
 
 class Viewport():
-    def __init__(self, grid):
+    def __init__(self, grid, player):
         self.grid = grid
+        self.player = player
     
     def display(self):
-        row = 0
-        while row < DISPLAY_SIZE:
-            col = 0
-            while col < DISPLAY_SIZE:
+        row = self.player.getRow() - (DISPLAY_SIZE / 2)
+        maxRow = self.player.getRow() + (DISPLAY_SIZE / 2)
+        maxCol = self.player.getCol() + (DISPLAY_SIZE / 2)
+        while row < maxRow:
+            col = self.player.getCol() - (DISPLAY_SIZE / 2)
+            while col < maxCol:
                 print self.grid.get(col, row),
                 col += 1
                 

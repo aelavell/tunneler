@@ -14,15 +14,14 @@ class Game():
         screen = pygame.display.set_mode((1, 1))
         pygame.mouse.set_visible(0)
         
-        gridSize = 30 
-        self.grid = Grid(gridSize, 2, 'd')
+        self.grid = Grid(GRID_SIZE, 2, 'd')
         base1 = Base('r', (0,0))
         base2 = Base('b', (10,10))
         #grid.replace(base1)        
         #grid.replace(base2)       
 
         self.player = Player(2, 2, self.grid)
-        self.vp = Viewport(self.grid)
+        self.vp = Viewport(self.grid, self.player)
         
     def clearScreen(self):
         if os.name == 'posix':

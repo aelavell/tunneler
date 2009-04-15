@@ -56,7 +56,7 @@ class Grid():
         # Make an empty in its place on the grid
         oldCol = obj.getCol()
         oldRow = obj.getRow()
-        empty = Empty(".") 
+        empty = Empty(EMPTY) 
         self.set(oldCol, oldRow, empty)
         
         # Move the object

@@ -2,6 +2,8 @@ from Constants import *
 from Empty import *
 
 class Object(Empty):
+    ''' A more well-defined object. It has coordinates. '''
+    
     def __init__(self, col, row, type):
         self.col = row 
         self.row = col 
