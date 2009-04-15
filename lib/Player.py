@@ -7,7 +7,7 @@ from Viewport import *
 
 class Player(Object):
     def __init__(self, col, row, grid):
-        Object.__init__(self, col, row, PLAYER)
+        Object.__init__(self, col, row, P1)
         self.grid = grid
         self.grid.set(col, row, self)
 
