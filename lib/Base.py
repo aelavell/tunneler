@@ -22,11 +22,11 @@ class Base():
         These will be generated randomly under a set of rules
         defined by how many people are playing, etc... '''
         
-        self.base = [['-', '-', 'e', '-', '-'],
-                ['|', p, p, p, '|'],
-                ['|', p, p, p, '|'],
-                ['|', p, p, p, '|'],
-                ['-', '-', 'e', '-', '-']]
+        self.base = [['-', '-', EMPTY, '-', '-'],
+                ['|', B1, B1, B1, '|'],
+                ['|', B1, B1, B1, '|'],
+                ['|', B1, B1, B1, '|'],
+                ['-', '-', EMPTY, '-', '-']]
         
         # TLC is top-left coordinates of the base
         self.TLC = TLC

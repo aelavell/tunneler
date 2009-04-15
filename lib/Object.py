@@ -10,18 +10,22 @@ class Object(Empty):
         self.coords = [col, row]
         self.setType(type)
 
-    def getCoords(self):
-        return self.coords
-
     def setCoords(self, col, row):
-        self.col = col
-        self.row = row
-        self.coords = [col,row]
+        self.setCol(col)
+        self.setRow(row)
 
+    def setCol(self, col):
+        self.col = col
+    
     def getCol(self):
         return self.col
 
+    def setRow(self, row):
+        self.row = row
+
     def getRow(self):
         return self.row
+        
+    
         
 

@@ -30,19 +30,15 @@ class Player(Object):
             nextObj = self.grid.get(col,row)
 
         if nextObj != 'null':
+            # The tank is tunneling through dirt
             if nextObj.getType() == DIRT:
                 nextObj.decrementHealth()
 
-            
-            # This is an IF instead of an ELIF because 
-            # if the player just crushed a piece of dirt, it will
-            # become a '.', and so he can move. This code may change,
-            # as it is dependent on order of the statements.
+            # The tank can move freely
             if nextObj.getType() == EMPTY:
                 self.grid.moveObj(col, row, self) 
             elif nextObj.getType() == FOG:
-                # MUST FIX
-                # Needs code to push row or col back to its
-                # original value
+                pass
+            elif nextObj.getType() == H_WALL:
                 pass
             

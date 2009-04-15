@@ -50,18 +50,23 @@ class Grid():
         They can't move onto dirt, or walls, or other movable 
         objects. They can't move off the grid.
         They leave an empty space in their wake.
+        
+        Also handles the actual setting of the object's new
+        col and row.
         '''
         
         # Make sure the move is in-bounds
         if self.isInBounds(newCol, newRow):
-            # Make an empty in its place on the grid
+            # Make an empty space in object's place on the grid
             oldCol = obj.getCol()
             oldRow = obj.getRow()
             empty = Empty(EMPTY) 
             self.set(oldCol, oldRow, empty)
             
             # Move the object
+            # Update the object's coords
             obj.setCoords(newCol, newRow)
+            # Put the object in the new place on the grid
             self.set(newCol, newRow, obj)
 
     def set(self, col, row, obj):

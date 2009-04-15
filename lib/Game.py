@@ -56,4 +56,6 @@ class Game():
 
             refreshCount += 1
 
+        # The game's over, clear the terminal
+        self.clearScreen()
         

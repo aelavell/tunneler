@@ -1,9 +1,12 @@
-REFRESH_RATE = 10000 
+REFRESH_RATE = 5000
 DISPLAY_SIZE = 11
 GRID_SIZE = 30
 DIRT_HEALTH = 1
 
 P1 = '@'
+B1 = '#'
 DIRT = 'd'
 EMPTY  = '.'
 FOG = 'f'
+V_WALL = '|'
+H_WALL = '-'
