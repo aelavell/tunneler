@@ -14,9 +14,9 @@ class Viewport():
         row = self.player.getRow() - (DISPLAY_SIZE / 2)
         maxRow = self.player.getRow() + (DISPLAY_SIZE / 2)
         maxCol = self.player.getCol() + (DISPLAY_SIZE / 2)
-        while row < maxRow:
+        while row <= maxRow:
             col = self.player.getCol() - (DISPLAY_SIZE / 2)
-            while col < maxCol:
+            while col <= maxCol:
                 print self.grid.get(col, row),
                 col += 1
                 
