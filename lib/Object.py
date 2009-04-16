@@ -1,7 +1,7 @@
 from Constants import *
-from Empty import *
+from Basic import *
 
-class Object(Empty):
+class Object(Basic):
     ''' A more well-defined object. It has coordinates. '''
     
     def __init__(self, col, row, type):

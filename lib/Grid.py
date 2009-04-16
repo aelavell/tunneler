@@ -14,29 +14,18 @@ class Grid():
     for example. s
     '''
     
-    def __init__(self, gridSize, pCount, fill): 
-        '''gridSize is the size of the grid defined by the variables passed
-        to this method. This variable is used to make the number of
-        rows and the number of columns. The grid is a square, so if 
-        gridSize = 20, then the grid will be 20col20. The default status
-        of a unit on the grid is "d", which stands for dirt. This is
-        given in the "fill" argument.
-        
-        This init method merely calls the create method to set up a 
-        grid filled with dirt. Bases will be added with another method 
-        later. '''
-        
+    def __init__(self): 
         row = []
         self.grid = []
             
         rowCounter = 0
         # Fill the grid with rows
-        while rowCounter < gridSize:
+        while rowCounter < GRID_SIZE:
             row = []
 
             # Fill the row with columns 
             colCounter = 0
-            while colCounter < gridSize:
+            while colCounter < GRID_SIZE:
                 dirt = Dirt(colCounter, rowCounter) 
                 row.append(dirt)
                 colCounter += 1
@@ -44,7 +33,7 @@ class Grid():
             self.grid.append(row)
             rowCounter += 1
 
-    def moveObj(self, newCol, newRow, obj):
+    def moveObj(self, obj, newCol, newRow):
         ''' 
         Handles moving an object around the grid,
         checking if it is in bounds.
@@ -59,7 +48,7 @@ class Grid():
             oldRow = obj.getRow()
             # This was under the object, return it to the grid
             underneath = obj.getUnderneath()
-            self.set(oldCol, oldRow, underneath)
+            self.set(underneath, oldCol, oldRow)
             
             # Move the object
             # Update the object's coords
@@ -69,9 +58,9 @@ class Grid():
             # Add it to the object
             obj.setUnderneath(newUnder)
             # Put the object in the new place on the grid
-            self.set(newCol, newRow, obj)
+            self.set(obj, newCol, newRow)
 
-    def set(self, col, row, obj):
+    def set(self, obj, col, row):
         ''' Puts an object in a particular place on the grid,
         if in bounds. 
         
@@ -86,8 +75,8 @@ class Grid():
             self.grid[col][row] = obj
             return oldObj
         else:
-            print "Could not set object at ", col, " ", row
-            fog = Empty(FOG)
+            print "Could not set ", obj, " at row:", row, "col:", col
+            fog = Basic(FOG)
             return fog
 
     def get(self, col, row):
@@ -98,46 +87,56 @@ class Grid():
         if self.isInBounds(col, row):
             return self.grid[col][row]
         else:
-            fog = Empty(FOG)
+            fog = Basic(FOG)
             return fog
             
     def isInBounds(self, col, row):
         ''' Encapsulates a boolean test to see whether or not
         a set of coordinates in the bounds of the grid. '''
         
-        if col >= 0 and col < GRID_SIZE and row > 0 and row < GRID_SIZE:
+        if col >= 0 and col < GRID_SIZE and row >= 0 and row < GRID_SIZE:
             return True
         else:
             return False
+    
+    def addBase(self, base, topLeftCol, topLeftRow):
+        ''' Adds a base for a particular player. 
+        BASE_SIZE is defined in the constants.py file.
+        It should always be and odd number.'''
+        
+        empty = Basic(EMPTY)
+        hWall = Basic(H_WALL)
+        vWall = Basic(V_WALL)
+        baseFloor = Basic(base)
+        
+        rowDelimeter = topLeftRow + BASE_SIZE
+        colDelimeter = topLeftCol + BASE_SIZE
+        
+        rowCounter = topLeftRow
+        # Generate the base
+        while rowCounter < rowDelimeter:
+            colCounter = topLeftCol
             
-    def replace(self, obj):   
-        ''' Method that abstracts the basic replacing of objects on the 
-        grid. ins is the instance of a class that is being dealt with,
-        and obj is what will be taking the place of what is currently
-        on the grid.
-        
-        SAMPLE INPUT:
-        replace(base1, base1.base)'''
-        
-        # l is the top left coord, r is the bottom right coord of
-        # the given object
-        l = obj.TLC
-        r = obj.BRC
-
-        item = obj.getItem()
-       
-        # GRC is the grid row coordinate
-        # GCC is the grid column coordinate
-        # IRC is the instance row coordinate
-        # ICC is the instance col coordinate
-        GRC = l[0]
-        IRC = 0
-        while GRC <= r[0]:
-            GCC = l[1]
-            ICC = 0
-            while GCC <= r[1]:
-                self.grid[GRC][GCC] = item[IRC][ICC]
-                GCC += 1
-                ICC += 1
-            GRC += 1
-            IRC += 1
+            while colCounter < colDelimeter:
+                # If it's the first or last row
+                if rowCounter == topLeftRow or rowCounter == rowDelimeter - 1:
+                    # if it's half-way, make an entrance
+                    if (colCounter - topLeftCol) == ((colDelimeter - topLeftCol) / 2 ):
+                        self.set(empty, colCounter, rowCounter)
+                    # Otherwise, a horizontal wall
+                    else:
+                        self.set(hWall, colCounter, rowCounter)
+                
+                # If it's any row in-between
+                else:
+                    # If it's the side of the base
+                    if colCounter == topLeftCol or colCounter == colDelimeter - 1:
+                        self.set(vWall, colCounter, rowCounter)
+                    # It's in the base
+                    else:
+                        self.set(baseFloor, colCounter, rowCounter)
+                       
+                colCounter += 1
+            
+            rowCounter += 1
+                    

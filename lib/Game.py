@@ -14,11 +14,8 @@ class Game():
         screen = pygame.display.set_mode((1, 1))
         pygame.mouse.set_visible(0)
         
-        self.grid = Grid(GRID_SIZE, 2, 'd')
-        base1 = Base('r', (0,0))
-        base2 = Base('b', (10,10))
-        #grid.replace(base1)        
-        #grid.replace(base2)       
+        self.grid = Grid()
+        self.grid.addBase(B1, 0, 0)    
 
         self.player = Player(2, 2, self.grid)
         self.vp = Viewport(self.grid, self.player)
@@ -57,5 +54,5 @@ class Game():
             refreshCount += 1
 
         # The game's over, clear the terminal
-        self.clearScreen()
+        #self.clearScreen()
         

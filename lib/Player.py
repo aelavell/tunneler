@@ -9,7 +9,7 @@ class Player(Object):
     def __init__(self, col, row, grid):
         Object.__init__(self, col, row, P1)
         self.grid = grid
-        under = self.grid.set(col, row, self)
+        under = self.grid.set(self, col, row)
         # object that is under the player initially
         self.setUnderneath(under)
         
@@ -55,11 +55,9 @@ class Player(Object):
 
             # The tank can move freely
             if nextObj.getType() == EMPTY:
-                self.grid.moveObj(col, row, self) 
-            elif nextObj.getType() == FOG:
-                pass
-            elif nextObj.getType() == H_WALL:
-                pass
+                self.grid.moveObj(self, col, row) 
+            elif nextObj.getType() == B1 or nextObj.getType == B2:
+                self.grid.moveObj(self, col, row) 
                 
     def update(self):
         # placeholder for healing / energy replacement
