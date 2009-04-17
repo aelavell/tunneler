@@ -17,9 +17,15 @@ class Game():
         
         self.grid = Grid()
         self.grid.addBase(B1, 3, 4)  
+        self.grid.addBase(B2, 10, 10)
         
-        self.player = Player(8, 8, self.grid, P1, B1, B2)
-        self.vp = Viewport(self.grid, self.player)
+        self.player1 = Player(5, 5, self.grid, P1, P2, B1, B2)
+        self.player2 = Player(12, 12, self.grid, P2, P1, B2, B1)
+        self.players = [self.player1, self.player2]
+        
+        self.vp1 = Viewport(self.grid, self.player1)
+        self.vp2 = Viewport(self.grid, self.player2)
+        self.viewports = [self.vp1, self.vp2]
         
     def clearScreen(self):
         if os.name == 'posix':
@@ -36,13 +42,15 @@ class Game():
         while not done:
             self.clearScreen()
 
-            self.player.update()
-            for bullet in self.player.getBullets():
-                bullet.move()
+            for player in self.players:
+                player.update()
+                for bullet in player.getBullets():
+                    bullet.move()
                 
-            # Display everything
-            self.vp.display()
-            self.vp.HUD()
+            for viewport in self.viewports:
+                # Display everything
+                viewport.display()
+                viewport.HUD()
                 
             refreshCount = 0 
 
@@ -50,16 +58,28 @@ class Game():
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         done = True
-                    elif event.key == K_w:
-                        self.player.move(NORTH) 
-                    elif event.key == K_s:
-                        self.player.move(SOUTH)
-                    elif event.key == K_d:
-                        self.player.move(EAST)
-                    elif event.key == K_a:
-                        self.player.move(WEST)
-                    elif event.key == K_SPACE:
-                        self.player.shoot()
+                    if event.key == K_w:
+                        self.player1.move(NORTH) 
+                    if event.key == K_s:
+                        self.player1.move(SOUTH)
+                    if event.key == K_d:
+                        self.player1.move(EAST)
+                    if event.key == K_a:
+                        self.player1.move(WEST)
+                    if event.key == K_SPACE:
+                        self.player1.shoot()
+                    if event.key == K_UP:
+                        self.player2.move(NORTH)
+                    if event.key == K_LEFT:
+                        self.player2.move(WEST)
+                    if event.key == K_RIGHT:
+                        self.player2.move(EAST)
+                    if event.key == K_DOWN:
+                        self.player2.move(SOUTH)
+                    if event.key == K_RCTRL:
+                        self.player2.shoot()
+                
+                    
 
             refreshCount += 1
             

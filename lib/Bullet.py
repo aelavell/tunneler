@@ -32,6 +32,8 @@ class Bullet(Movable):
         if object.getType() in KILLABLES:
             if object.getType() == DIRT:
                 object.decrementHealth()
+            elif object.getType() == self.player.getEnemy():
+                object.decreaseHealth(10)
         
         self.die()
                 

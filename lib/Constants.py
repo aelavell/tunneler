@@ -1,9 +1,9 @@
 MAX_FPS = 30
 DISPLAY_SIZE = 11
-GRID_SIZE = 30
+GRID_SIZE = 300
 DIRT_HEALTH = 1
-# should always be an odd number, so that base entrances line up
-BASE_SIZE = 9
+# should always be an odd number > 1, so that base entrances line up
+BASE_SIZE = 5
 
 # Health / Energy
 MAX_HEALTH = 100
@@ -26,6 +26,7 @@ EAST = 'e'
 WEST = 'w'
 SOUTH = 's'
 
+MOVABLES = [EMPTY, B1, B2]
 COLLIDABLES = [P1, P2, H_WALL, V_WALL, FOG, DIRT]
 KILLABLES = [P1, P2, DIRT]
 

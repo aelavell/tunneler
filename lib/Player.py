@@ -6,10 +6,11 @@ from Viewport import *
 from Bullet import *
 
 class Player(Movable):
-    def __init__(self, col, row, grid, whichPlayer, whichBase, enemyBase):
-        Movable.__init__(self, col, row, SOUTH, grid, whichPlayer)
+    def __init__(self, col, row, grid, player, enemy, whichBase, enemyBase):
+        Movable.__init__(self, col, row, SOUTH, grid, player)
         
         self.base = whichBase
+        self.enemy = enemy
         self.enemyBase = enemyBase
         
         self.setHealth(MAX_HEALTH)
@@ -19,6 +20,9 @@ class Player(Movable):
         # this array, so the game will know to move it
         # one more step every frame
         self.bullets = []
+        
+    def getEnemy(self):
+        return self.enemy
         
     def shoot(self):
         ''' Shoots a bullet in the direction that the 
@@ -109,9 +113,7 @@ class Player(Movable):
             nextObj.decrementHealth()
 
         # The tank can move freely
-        if nextObj.getType() == EMPTY:
-            self.grid.moveObj(self, col, row) 
-        elif nextObj.getType() == self.base or nextObj.getType == self.enemyBase:
+        if nextObj.getType() in MOVABLES:
             self.grid.moveObj(self, col, row) 
                 
     def update(self):
