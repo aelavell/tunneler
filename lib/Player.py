@@ -1,24 +1,42 @@
 from Constants import *
 from Grid import *
-from Object import *
+from Movable import *
 from Dirt import *
-from Base import *
 from Viewport import *
+from Bullet import *
 
-class Player(Object):
+class Player(Movable):
     def __init__(self, col, row, grid, whichPlayer, whichBase, enemyBase):
-        Object.__init__(self, col, row, whichPlayer)
-        self.grid = grid
-        
-        # object that is under the player initially
-        under = self.grid.set(self, col, row)
-        self.setUnderneath(under)
+        Movable.__init__(self, col, row, SOUTH, grid, whichPlayer)
         
         self.base = whichBase
         self.enemyBase = enemyBase
         
         self.setHealth(MAX_HEALTH)
         self.setEnergy(MAX_ENERGY)
+        
+        # If the player shoots a bullet, it's added to
+        # this array, so the game will know to move it
+        # one more step every frame
+        self.bullets = []
+        
+    def shoot(self):
+        ''' Shoots a bullet in the direction that the 
+        player is currently facing. '''
+        
+        col, row = self.handleDirection(self.direction)
+        
+        # Create the bullet (it adds itself to the bullet list)
+        bullet = Bullet(col, row, self.direction, self.grid, self)
+        
+    def addBullet(self, bullet):
+        self.bullets.append(bullet)
+        
+    def removeBullet(self, bullet):
+        self.bullets.remove(bullet)
+        
+    def getBullets(self):
+        return self.bullets
         
     def setHealth(self, health):
         ''' Set player's health to a particular value. '''
@@ -76,56 +94,25 @@ class Player(Object):
         ''' Decreases player's energy by amount specified. '''
         
         self.energy -= amount
-    
-    def setUnderneath(self, obj):
-        ''' The player will always be on top of something
-        in the grid - be it an empty space, or the floor of 
-        a base, it will have to be remembered so it can be
-        placed back onto the grid after the player has moved
-        on. Also, when the player is on the floor of the base,
-        special things happen to him, such as replenishment
-        of health and energy. '''
         
-        self.underneath = obj
-        
-    def getUnderneath(self):
-        ''' Returns the part of the grid that is currently
-        underneath the player. '''
-        
-        return self.underneath
-
     def move(self, direction):
-        ''' Move the player along the grid. Direction should
-        be: n, e, w, or s, which stand for north, east, west,
-        south. '''
+        ''' Move the player along the grid.'''
         
-        nextObj = 'null'
-        col = self.getCol() 
-        row = self.getRow()
+        self.setDirection(direction)
+    
+        col, row = self.handleDirection(direction)
         
-        if direction == 'n':
-            row -= 1
-            nextObj = self.grid.get(col,row)
-        elif direction == 's':
-            row += 1
-            nextObj = self.grid.get(col,row)
-        elif direction == 'e': 
-            col += 1
-            nextObj = self.grid.get(col,row)
-        elif direction == 'w':
-            col -= 1
-            nextObj = self.grid.get(col,row)
+        nextObj = self.grid.get(col, row)
 
-        if nextObj != 'null':
-            # The tank is tunneling through dirt
-            if nextObj.getType() == DIRT:
-                nextObj.decrementHealth()
+        # The tank is tunneling through dirt
+        if nextObj.getType() == DIRT:
+            nextObj.decrementHealth()
 
-            # The tank can move freely
-            if nextObj.getType() == EMPTY:
-                self.grid.moveObj(self, col, row) 
-            elif nextObj.getType() == self.base or nextObj.getType == self.enemyBase:
-                self.grid.moveObj(self, col, row) 
+        # The tank can move freely
+        if nextObj.getType() == EMPTY:
+            self.grid.moveObj(self, col, row) 
+        elif nextObj.getType() == self.base or nextObj.getType == self.enemyBase:
+            self.grid.moveObj(self, col, row) 
                 
     def update(self):
         if self.underneath.getType() == self.base:

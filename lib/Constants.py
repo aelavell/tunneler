@@ -1,4 +1,4 @@
-REFRESH_RATE = 5000
+MAX_FPS = 30
 DISPLAY_SIZE = 11
 GRID_SIZE = 30
 DIRT_HEALTH = 1
@@ -20,3 +20,16 @@ EMPTY  = '.'
 FOG = 'f'
 V_WALL = '|'
 H_WALL = '-'
+BULLET = '*'
+NORTH = 'n'
+EAST = 'e'
+WEST = 'w'
+SOUTH = 's'
+
+COLLIDABLES = [P1, P2, H_WALL, V_WALL, FOG, DIRT]
+KILLABLES = [P1, P2, DIRT]
+
+# append debugging errors to this to get printed by viewport
+error = []
+DEBUG = True
+

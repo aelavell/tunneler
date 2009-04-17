@@ -2,7 +2,6 @@ from Constants import *
 from Grid import *
 from Object import *
 from Dirt import *
-from Base import *
 from Viewport import *
 
 class Viewport():
@@ -16,6 +15,10 @@ class Viewport():
         
         print "Health: ", self.player.getHealth()
         print "Energy: ", self.player.getEnergy()
+        
+        if DEBUG == True:
+            for e in error:
+                print e
     
     def display(self):
         ''' Displays a view centered on the player.'''

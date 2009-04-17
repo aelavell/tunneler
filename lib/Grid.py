@@ -3,7 +3,6 @@ from Constants import *
 from Player import *
 from Object import *
 from Dirt import *
-from Base import *
 from Viewport import *
 
 class Grid():
@@ -26,7 +25,7 @@ class Grid():
             # Fill the row with columns 
             colCounter = 0
             while colCounter < GRID_SIZE:
-                dirt = Dirt(colCounter, rowCounter) 
+                dirt = Dirt(colCounter, rowCounter, self) 
                 row.append(dirt)
                 colCounter += 1
         
@@ -75,7 +74,8 @@ class Grid():
             self.grid[col][row] = obj
             return oldObj
         else:
-            print "Could not set ", obj, " at row:", row, "col:", col
+            if DEBUG == True:
+                error.append("Could not set ", obj, " at row:", row, "col:", col)
             fog = Basic(FOG)
             return fog
 
