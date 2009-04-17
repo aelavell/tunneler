@@ -14,6 +14,51 @@ class Player(Object):
         under = self.grid.set(self, col, row)
         self.setUnderneath(under)
         
+        self.setHealth(MAX_HEALTH)
+        self.setEnergy(MAX_ENERGY)
+        
+    def setHealth(self, health):
+        ''' Set player's health to a particular value. '''
+        
+        # Don't let the health get set to above maximum value
+        if health <= MAX_HEALTH:
+            self.health = health
+        else:
+            self.health = MAX_HEALTH
+            
+    def getHealth(self):
+        ''' Returns how much health the player has. '''
+        
+        return self.health
+            
+    def setEnergy(self, energy):
+        ''' Set the player's energy to a particular value. '''
+        
+        if energy <= MAX_ENERGY: 
+            self.energy = energy
+        else:
+            self.energy = MAX_ENERGY
+    
+    def getEnergy(self):
+        ''' Returns how much energy the player has. '''
+        
+        return self.energy
+        
+    def increaseEnergy(self, amount):
+        ''' Increases player's energy by amount specified. 
+        Will not increase past the max amount of energy. '''
+        
+        if (self.energy + amount) <= MAX_ENERGY:
+            self.energy += amount
+        # Otherwise, it would increase past maximum energy
+        else:
+            self.energy = MAX_ENERGY
+        
+    def decreaseEnergy(self, amount):
+        ''' Decreases player's energy by amount specified. '''
+        
+        self.energy -= amount
+    
     def setUnderneath(self, obj):
         ''' The player will always be on top of something
         in the grid - be it an empty space, or the floor of 
@@ -32,6 +77,10 @@ class Player(Object):
         return self.underneath
 
     def move(self, direction):
+        ''' Move the player along the grid. Direction should
+        be: n, e, w, or s, which stand for north, east, west,
+        south. '''
+        
         nextObj = 'null'
         col = self.getCol() 
         row = self.getRow()
@@ -62,6 +111,14 @@ class Player(Object):
                 
     def update(self):
         # placeholder for healing / energy replacement
-        if self.underneath.type() == B1:
+        if self.underneath.getType() == B1:
+            self.increaseEnergy(1)
+        elif self.underneath.getType() == B2:
             pass
+            
+        # Otherwise, the player is not in a base
+        # His energy must be drained periodically
+        else:
+            self.decreaseEnergy(1)
+                
             

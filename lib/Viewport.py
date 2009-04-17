@@ -9,6 +9,13 @@ class Viewport():
     def __init__(self, grid, player):
         self.grid = grid
         self.player = player
+        
+    def HUD(self):
+        ''' The HUD (Heads-Up Display) shows off the player's
+        health and energy. '''
+        
+        print "Health: ", self.player.getHealth()
+        print "Energy: ", self.player.getEnergy()
     
     def display(self):
         ''' Displays a view centered on the player.'''

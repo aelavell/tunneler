@@ -35,7 +35,13 @@ class Game():
         while not done:
             if refreshCount == REFRESH_RATE:
                 self.clearScreen()
+
+                self.player.update()
+                
+                # Display everything
                 self.vp.display()
+                self.vp.HUD()
+                
                 refreshCount = 0 
 
             for event in pygame.event.get():
