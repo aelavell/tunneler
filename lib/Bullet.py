@@ -38,5 +38,13 @@ class Bullet(Movable):
         self.die()
                 
     def die(self):
-        self.grid.set(self.underneath, self.col, self.row)
+        
+        # If the bullet happens to collide with the other
+        # player just as they shoot a bullet, THIS needs
+        # to happen
+        if self.underneath.getType() == BULLET:
+            self.grid.set(self.underneath.getUnderneath(), self.col, self.row)
+        else:
+            self.grid.set(self.underneath, self.col, self.row)
+            
         self.player.removeBullet(self)
