@@ -6,13 +6,16 @@ from Base import *
 from Viewport import *
 
 class Player(Object):
-    def __init__(self, col, row, grid):
-        Object.__init__(self, col, row, P1)
+    def __init__(self, col, row, grid, whichPlayer, whichBase, enemyBase):
+        Object.__init__(self, col, row, whichPlayer)
         self.grid = grid
         
         # object that is under the player initially
         under = self.grid.set(self, col, row)
         self.setUnderneath(under)
+        
+        self.base = whichBase
+        self.enemyBase = enemyBase
         
         self.setHealth(MAX_HEALTH)
         self.setEnergy(MAX_ENERGY)
@@ -30,6 +33,21 @@ class Player(Object):
         ''' Returns how much health the player has. '''
         
         return self.health
+        
+    def increaseHealth(self, amount):
+        ''' Increases player's health. Won't go past
+        max health. '''
+        
+        if (self.health + amount) <= MAX_HEALTH:
+            self.health += amount
+        # Otherwise, it would increase past maximum health
+        else:
+            self.health = MAX_HEALTH
+            
+    def decreaseHealth(self, amount):
+        ''' Decreases player's health. '''
+        
+        self.health -= amount
             
     def setEnergy(self, energy):
         ''' Set the player's energy to a particular value. '''
@@ -106,18 +124,18 @@ class Player(Object):
             # The tank can move freely
             if nextObj.getType() == EMPTY:
                 self.grid.moveObj(self, col, row) 
-            elif nextObj.getType() == B1 or nextObj.getType == B2:
+            elif nextObj.getType() == self.base or nextObj.getType == self.enemyBase:
                 self.grid.moveObj(self, col, row) 
                 
     def update(self):
-        # placeholder for healing / energy replacement
-        if self.underneath.getType() == B1:
+        if self.underneath.getType() == self.base:
             self.increaseEnergy(1)
-        elif self.underneath.getType() == B2:
-            pass
+            self.increaseHealth(1)
+        elif self.underneath.getType() == self.enemyBase:
+            self.increaseEnergy(1)
             
         # Otherwise, the player is not in a base
-        # His energy must be drained periodically
+        # His energy must be drained
         else:
             self.decreaseEnergy(1)
                 
