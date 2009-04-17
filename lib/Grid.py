@@ -107,7 +107,6 @@ class Grid():
         empty = Basic(EMPTY)
         hWall = Basic(H_WALL)
         vWall = Basic(V_WALL)
-        baseFloor = Basic(base)
         
         rowDelimeter = topLeftRow + BASE_SIZE
         colDelimeter = topLeftCol + BASE_SIZE
@@ -134,6 +133,7 @@ class Grid():
                         self.set(vWall, colCounter, rowCounter)
                     # It's in the base
                     else:
+                        baseFloor = Object(colCounter, rowCounter, base)
                         self.set(baseFloor, colCounter, rowCounter)
                        
                 colCounter += 1

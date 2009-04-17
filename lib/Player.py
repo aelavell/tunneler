@@ -9,8 +9,9 @@ class Player(Object):
     def __init__(self, col, row, grid):
         Object.__init__(self, col, row, P1)
         self.grid = grid
-        under = self.grid.set(self, col, row)
+        
         # object that is under the player initially
+        under = self.grid.set(self, col, row)
         self.setUnderneath(under)
         
     def setUnderneath(self, obj):

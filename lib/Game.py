@@ -15,9 +15,9 @@ class Game():
         pygame.mouse.set_visible(0)
         
         self.grid = Grid()
-        self.grid.addBase(B1, 0, 0)    
-
-        self.player = Player(2, 2, self.grid)
+        self.grid.addBase(B1, 3, 4)  
+        
+        self.player = Player(6, 8, self.grid)
         self.vp = Viewport(self.grid, self.player)
         
     def clearScreen(self):

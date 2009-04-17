@@ -3,7 +3,7 @@ DISPLAY_SIZE = 11
 GRID_SIZE = 30
 DIRT_HEALTH = 1
 # should always be an odd number, so that base entrances line up
-BASE_SIZE = 11
+BASE_SIZE = 9
 
 P1 = '@'
 B1 = '#'
