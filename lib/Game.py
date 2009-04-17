@@ -19,7 +19,7 @@ class Game():
         self.grid.addBase(B1, 3, 4)  
         self.grid.addBase(B2, 10, 10)
         
-        self.player1 = Player(6, 5, self.grid, P1, P2, B1, B2)
+        self.player1 = Player(5, 6, self.grid, P1, P2, B1, B2)
         self.player2 = Player(12, 12, self.grid, P2, P1, B2, B1)
         self.players = [self.player1, self.player2]
         
@@ -51,6 +51,9 @@ class Game():
                 # Display everything
                 viewport.display()
                 viewport.HUD()
+                if DEBUG == True:
+                    for e in error:
+                        print e
                 
             refreshCount = 0 
 

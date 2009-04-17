@@ -15,10 +15,6 @@ class Viewport():
         
         print "Health: ", self.player.getHealth()
         print "Energy: ", self.player.getEnergy()
-        
-        if DEBUG == True:
-            for e in error:
-                print e
     
     def display(self):
         ''' Displays a view centered on the player.'''

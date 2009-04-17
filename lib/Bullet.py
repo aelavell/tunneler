@@ -25,7 +25,7 @@ class Bullet(Movable):
         if nextObj.getType() in COLLIDABLES:
             self.collide(nextObj)
         else:
-            # Keep on goin
+            # Move on 
             self.grid.moveObj(self, col, row)
             
     def collide(self, object):
@@ -38,11 +38,10 @@ class Bullet(Movable):
         self.die()
                 
     def die(self):
-        
         # If the bullet happens to collide with the other
         # player just as they shoot a bullet, THIS needs
         # to happen
-        if self.underneath.getType() == BULLET:
+        if self.underneath.getType() in TEMPORARIES:
             self.grid.set(self.underneath.getUnderneath(), self.col, self.row)
         else:
             self.grid.set(self.underneath, self.col, self.row)

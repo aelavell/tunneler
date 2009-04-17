@@ -47,7 +47,15 @@ class Grid():
             oldRow = obj.getRow()
             # This was under the object, return it to the grid
             underneath = obj.getUnderneath()
-            self.set(underneath, oldCol, oldRow)
+            
+            # If two temporary objects (I.E. bullets)
+            # move over each other, then one of them will 
+            # try to reset the ground erroneously to be
+            # a bullet, instead of the ground
+            if underneath.getType() in TEMPORARIES:
+                self.set(underneath.getUnderneath(), oldCol, oldRow)
+            else:
+                self.set(underneath, oldCol, oldRow)
             
             # Move the object
             # Update the object's coords

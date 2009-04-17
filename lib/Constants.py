@@ -29,6 +29,7 @@ SOUTH = 's'
 MOVABLES = [EMPTY, B1, B2]
 COLLIDABLES = [P1, P2, H_WALL, V_WALL, FOG, DIRT]
 KILLABLES = [P1, P2, DIRT]
+TEMPORARIES = [BULLET]
 
 # append debugging errors to this to get printed by viewport
 error = []
