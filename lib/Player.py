@@ -1,5 +1,6 @@
 from Constants import *
 from Grid import *
+from Game import *
 from Movable import *
 from Dirt import *
 from Viewport import *
@@ -28,6 +29,7 @@ class Player(Movable):
         # this array, so the game will know to move it
         # one more step every frame
         self.bullets = []
+        self.dead = False
         
     def getEnemy(self):
         return self.enemy
@@ -143,23 +145,29 @@ class Player(Movable):
         self.underneath = obj
             
     def update(self):
-        if self.underneath.getType() in BASES:
-            self.healthTimer += 1
-        self.energyTimer += 1
+        ''' Handles all the junk associated with 
+        energy and health increases and decreases. 
+        Also checks for player's death. '''
         
-        if self.underneath.getType() == self.base:
-            if self.healthTimer == HEALTH_INCREASE_TIME:
-                self.increaseHealth(1)
-                self.healthTimer = 0
-            if self.energyTimer == ENERGY_INCREASE_TIME:
-                self.increaseEnergy(1)
-                self.energyTimer = 0
-                
-        elif self.underneath.getType() == self.enemyBase:
-            if self.energyTimer == AWAY_ENERGY_INCREASE_TIME:
-                self.increaseEnergy(1)
-                self.energyTimer = 0
-            
+        if self.health <= 0:
+            self.die()
+        
+        if self.underneath.getType() in BASES:
+            if self.underneath.getType() == self.base:
+                # Health timer is only activated in one's own base
+                self.healthTimer += 1
+                if self.healthTimer == HEALTH_INCREASE_TIME:
+                    self.increaseHealth(1)
+                    self.healthTimer = 0
+                if self.energyTimer == ENERGY_INCREASE_TIME:
+                    self.increaseEnergy(1)
+                    self.energyTimer = 0
+                    
+            elif self.underneath.getType() == self.enemyBase:
+                if self.energyTimer == AWAY_ENERGY_INCREASE_TIME:
+                    self.increaseEnergy(1)
+                    self.energyTimer = 0
+        
         # Otherwise, the player is not in a base
         # His energy must be drained
         else:
@@ -167,4 +175,12 @@ class Player(Movable):
                 self.decreaseEnergy(1)
                 self.energyTimer = 0
                 
+        # Energy timer is always going, regardless
+        # Either for increase or decrease
+        self.energyTimer += 1
             
+    def die(self):
+        self.dead = True
+        
+    def getDead(self):
+        return self.dead

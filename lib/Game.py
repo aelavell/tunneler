@@ -35,18 +35,31 @@ class Game():
             # DOS/Windows
             os.system('CLS')
             
+    def startGame(self):
+        ''' Starts the game. '''
+        
+        self.gameOn = True        
+    
+    def endGame(self):
+        ''' Ends the game. '''
+        
+        self.gameOn = False
+
     def mainLoop(self):
-        done = False
         # frameCount is a way of controlling the speed
         # of movement when a movement button is held
         frameCount = 0
         
+        self.startGame()
+        
         # Main game loop
-        while not done:
+        while self.gameOn:
             self.clearScreen()
 
             for player in self.players:
                 player.update()
+                if player.getDead() == True:
+                    self.endGame()
                 for bullet in player.getBullets():
                     bullet.move()
                 
@@ -98,6 +111,16 @@ class Game():
                     self.player1.move(WEST)
                 if pressed[K_SPACE] == 1:
                     self.player1.shoot()
+                if pressed[K_UP] == 1:
+                    self.player2.move(NORTH)   
+                if pressed[K_DOWN] == 1:
+                    self.player2.move(SOUTH)
+                if pressed[K_RIGHT] == 1:
+                    self.player2.move(EAST)
+                if pressed[K_LEFT] == 1:
+                    self.player2.move(WEST)
+                if pressed[K_RCTRL] == 1:
+                    self.player2.shoot()
 
             frameCount += 1
             
