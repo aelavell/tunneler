@@ -7,11 +7,19 @@ from Bullet import *
 
 class Player(Movable):
     def __init__(self, col, row, grid, player, enemy, whichBase, enemyBase):
+        # Set it to a dummy value until it gets initialized
+        self.underneath = 0
+        
         Movable.__init__(self, col, row, SOUTH, grid, player)
         
         self.base = whichBase
         self.enemy = enemy
         self.enemyBase = enemyBase
+        
+        # The timer is used to regulate decreasing/increasing
+        # health and energy
+        self.healthTimer = 0
+        self.energyTimer = 0
         
         self.setHealth(MAX_HEALTH)
         self.setEnergy(MAX_ENERGY)
@@ -32,6 +40,8 @@ class Player(Movable):
         
         # Create the bullet (it adds itself to the bullet list)
         bullet = Bullet(col, row, self.direction, self.grid, self)
+        
+        self.decreaseEnergy(SHOOTING_ENERGY_DECREASE)
         
     def addBullet(self, bullet):
         self.bullets.append(bullet)
@@ -115,17 +125,46 @@ class Player(Movable):
         # The tank can move freely
         if nextObj.getType() in MOVABLES:
             self.grid.moveObj(self, col, row) 
+            
+    def setUnderneath(self, obj):
+        ''' As soon as the player moves on to a specific
+        type of terrain, certain things must happen. 
+        For example, if he moves onto his base, 
+        a timer has to be started to heal him. '''
+        
+        # As long as it's not before player's been
+        # initialized on the grid
+        if self.underneath != 0:
+            # player has moved to a new type of terrain
+            if self.underneath != obj:
+                self.healthTimer = 0
+                self.energyTimer = 0
                 
+        self.underneath = obj
+            
     def update(self):
+        if self.underneath.getType() in BASES:
+            self.healthTimer += 1
+        self.energyTimer += 1
+        
         if self.underneath.getType() == self.base:
-            self.increaseEnergy(1)
-            self.increaseHealth(1)
+            if self.healthTimer == HEALTH_INCREASE_TIME:
+                self.increaseHealth(1)
+                self.healthTimer = 0
+            if self.energyTimer == ENERGY_INCREASE_TIME:
+                self.increaseEnergy(1)
+                self.energyTimer = 0
+                
         elif self.underneath.getType() == self.enemyBase:
-            self.increaseEnergy(1)
+            if self.energyTimer == AWAY_ENERGY_INCREASE_TIME:
+                self.increaseEnergy(1)
+                self.energyTimer = 0
             
         # Otherwise, the player is not in a base
         # His energy must be drained
         else:
-            self.decreaseEnergy(1)
+            if self.energyTimer == ENERGY_DECREASE_TIME:
+                self.decreaseEnergy(1)
+                self.energyTimer = 0
                 
             
