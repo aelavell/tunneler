@@ -14,6 +14,7 @@ class Game():
         screen = pygame.display.set_mode((1, 1))
         pygame.mouse.set_visible(0)
         self.clock = pygame.time.Clock()
+        #pygame.event.set_grab(True)
         
         self.grid = Grid()
         self.grid.addBase(B1, 3, 4)  
@@ -36,7 +37,9 @@ class Game():
             
     def mainLoop(self):
         done = False
-        refreshCount = 0
+        # frameCount is a way of controlling the speed
+        # of movement when a movement button is held
+        frameCount = 0
         
         # Main game loop
         while not done:
@@ -54,11 +57,10 @@ class Game():
                 if DEBUG == True:
                     for e in error:
                         print e
-                
-            refreshCount = 0 
-
+            
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
+                    frameCount = 0
                     if event.key == K_ESCAPE:
                         done = True
                     if event.key == K_w:
@@ -82,9 +84,22 @@ class Game():
                     if event.key == K_RCTRL:
                         self.player2.shoot()
                 
-                    
+            #pygame.event.pump()
+            if frameCount == MAX_FPS / 3:
+                frameCount = 0
+                pressed = pygame.key.get_pressed()
+                if pressed[K_w] == 1:
+                    self.player1.move(NORTH)   
+                if pressed[K_s] == 1:
+                    self.player1.move(SOUTH)
+                if pressed[K_d] == 1:
+                    self.player1.move(EAST)
+                if pressed[K_a] == 1:
+                    self.player1.move(WEST)
+                if pressed[K_SPACE] == 1:
+                    self.player1.shoot()
 
-            refreshCount += 1
+            frameCount += 1
             
             # keep the game running at the right speed
             self.clock.tick(MAX_FPS)

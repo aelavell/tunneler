@@ -26,7 +26,8 @@ EAST = 'e'
 WEST = 'w'
 SOUTH = 's'
 
-MOVABLES = [EMPTY, B1, B2]
+# A player can move over his own bullet without effect
+MOVABLES = [EMPTY, B1, B2, BULLET]
 COLLIDABLES = [P1, P2, H_WALL, V_WALL, FOG, DIRT]
 KILLABLES = [P1, P2, DIRT]
 TEMPORARIES = [BULLET]

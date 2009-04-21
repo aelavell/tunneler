@@ -82,8 +82,6 @@ class Grid():
             self.grid[col][row] = obj
             return oldObj
         else:
-            if DEBUG == True:
-                error.append("Could not set ", obj, " at row:", row, "col:", col)
             fog = Basic(FOG)
             return fog
 

@@ -23,7 +23,12 @@ class Bullet(Movable):
         nextObj = self.grid.get(col, row)
         
         if nextObj.getType() in COLLIDABLES:
-            self.collide(nextObj)
+            # This needs to happen, because when the player
+            # shoots and moves at the same time he will
+            # step on his bullet immediately after he shoots
+            # it. This is an easy way around it
+            if nextObj != self.player:
+                self.collide(nextObj)
         else:
             # Move on 
             self.grid.moveObj(self, col, row)
