@@ -25,10 +25,15 @@ FOG = 'f'
 V_WALL = '|'
 H_WALL = '-'
 BULLET = '*'
+
 NORTH = 'n'
 EAST = 'e'
 WEST = 'w'
 SOUTH = 's'
+NORTHEAST = 'ne'
+NORTHWEST = 'nw'
+SOUTHEAST = 'se'
+SOUTHWEST = 'sw'
 
 # A player can move over his own bullet without effect
 MOVABLES = [EMPTY, B1, B2, BULLET]

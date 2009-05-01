@@ -5,11 +5,17 @@ from Movable import *
 from Dirt import *
 from Viewport import *
 from Bullet import *
+import pygame
+from pygame.locals import *
 
 class Player(Movable):
     def __init__(self, col, row, grid, player, enemy, whichBase, enemyBase):
         # Set it to a dummy value until it gets initialized
         self.underneath = 0
+        
+        # frameCount is a way of controlling the speed
+        # of movement when a movement button is held
+        self.frameCount = 0
         
         Movable.__init__(self, col, row, SOUTH, grid, player)
         
@@ -30,6 +36,9 @@ class Player(Movable):
         # one more step every frame
         self.bullets = []
         self.dead = False
+        
+    def setControls(self, controls):
+        self.controls = controls
         
     def getEnemy(self):
         return self.enemy
@@ -151,7 +160,38 @@ class Player(Movable):
         
         if self.health <= 0:
             self.die()
+        if self.energy <= 0:
+            self.die()
+            
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                self.frameCount = 0
+                if event.key == self.controls[NORTH]:
+                    self.move(NORTH) 
+                if event.key == self.controls[SOUTH]:
+                    self.move(SOUTH)
+                if event.key == self.controls[EAST]:
+                    self.move(EAST)
+                if event.key == self.controls[WEST]:
+                    self.move(WEST)
+                if event.key == self.controls['SHOOT']:
+                    self.shoot()
+                    
+        if self.frameCount == MAX_FPS / 3:
+            self.frameCount = 0
+            pressed = pygame.key.get_pressed()
+            if pressed[self.controls[NORTH]] == 1:
+                self.move(NORTH)   
+            if pressed[self.controls[SOUTH]] == 1:
+                self.move(SOUTH)
+            if pressed[self.controls[EAST]] == 1:
+                self.move(EAST)
+            if pressed[self.controls[WEST]] == 1:
+                self.move(WEST)
+            if pressed[self.controls['SHOOT']] == 1:
+                self.shoot()
         
+        # ENERGY / HEALTH DRAINAGE
         if self.underneath.getType() in BASES:
             if self.underneath.getType() == self.base:
                 # Health timer is only activated in one's own base
@@ -173,14 +213,15 @@ class Player(Movable):
         else:
             if self.energyTimer == ENERGY_DECREASE_TIME:
                 self.decreaseEnergy(1)
-                self.energyTimer = 0
+                self.energyTimer = 0    
                 
         # Energy timer is always going, regardless
         # Either for increase or decrease
         self.energyTimer += 1
+        self.frameCount += 1
             
     def die(self):
         self.dead = True
         
-    def getDead(self):
+    def isDead(self):
         return self.dead

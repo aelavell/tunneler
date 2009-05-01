@@ -145,4 +145,8 @@ class Grid():
                 colCounter += 1
             
             rowCounter += 1
-                    
+    
+    def addBaseRandomly(self, base):
+        ''' Adds a base in a random location on the grid.'''
+        
+        
