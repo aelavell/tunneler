@@ -67,6 +67,7 @@ class Game():
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         self.endGame()
+                        sys.exit()
             
             # keep the game running at the right speed
             self.clock.tick(MAX_FPS)
