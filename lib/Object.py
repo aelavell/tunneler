@@ -15,7 +15,7 @@ class Object(pygame.sprite.Sprite):
         self.col = col 
         self.coords = (row, col)
         self.setType(type)
-        self.setImage("%s.png" %type)
+        self.setImage(type)
         
     def setCoords(self, row, col):
         ''' Coords are the object's coordinates pertaining
@@ -47,7 +47,7 @@ class Object(pygame.sprite.Sprite):
         return self.position
     
     def setImage(self, imageFileName):
-        self.image, self.rect = imageLoad(imageFileName)
+        self.image, self.rect = imageLoad("%s.png" %imageFileName)
     
     def getImage(self):
         return self.image

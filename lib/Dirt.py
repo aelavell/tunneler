@@ -22,3 +22,4 @@ class Dirt(Object):
 
         # this does
         self.setType(EMPTY)
+        self.setImage(EMPTY)

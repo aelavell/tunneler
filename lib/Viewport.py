@@ -44,6 +44,7 @@ class Viewport():
             
     def updateDisplay(self):
         self.sprites.update()
+        self.surf.fill((0,0,0))
         self.sprites.draw(self.surf)
             
     def getDisplay(self):
