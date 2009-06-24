@@ -1,11 +1,14 @@
+import pygame
+from pygame.locals import *
+
 from Constants import *
 from Player import *
 from Movable import *
 from Grid import *
 
 class Bullet(Movable):
-    def __init__(self, col, row, direction, grid, player):
-        Movable.__init__(self, col, row, direction, grid, BULLET)
+    def __init__(self, row, col, direction, grid, player):
+        Movable.__init__(self, BULLET, row, col, direction, grid)
         self.player = player
   
         self.player.addBullet(self)
@@ -18,9 +21,9 @@ class Bullet(Movable):
         ''' The bullet will move straight until it collides with
         something. '''
         
-        col, row = self.handleDirection(self.direction)
+        row, col = self.handleDirection(self.direction)
             
-        nextObj = self.grid.get(col, row)
+        nextObj = self.grid.get(row, col)
         
         if nextObj.getType() in COLLIDABLES:
             # This needs to happen, because when the player
@@ -31,7 +34,7 @@ class Bullet(Movable):
                 self.collide(nextObj)
         else:
             # Move on 
-            self.grid.moveObj(self, col, row)
+            self.grid.moveObj(self, row, col)
             
     def collide(self, object):
         if object.getType() in KILLABLES:
@@ -47,8 +50,8 @@ class Bullet(Movable):
         # player just as they shoot a bullet, THIS needs
         # to happen
         if self.underneath.getType() in TEMPORARIES:
-            self.grid.set(self.underneath.getUnderneath(), self.col, self.row)
+            self.grid.set(self.underneath.getUnderneath(), self.row, self.col)
         else:
-            self.grid.set(self.underneath, self.col, self.row)
+            self.grid.set(self.underneath, self.row, self.col)
             
         self.player.removeBullet(self)

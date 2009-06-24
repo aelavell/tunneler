@@ -1,3 +1,6 @@
+import pygame
+from pygame.locals import *
+
 from Constants import *
 from Grid import *
 from Game import *
@@ -5,11 +8,9 @@ from Movable import *
 from Dirt import *
 from Viewport import *
 from Bullet import *
-import pygame
-from pygame.locals import *
 
 class Player(Movable):
-    def __init__(self, col, row, grid, player, enemy, whichBase, enemyBase):
+    def __init__(self, row, col, grid, player, enemy, whichBase, enemyBase):
         # Set it to a dummy value until it gets initialized
         self.underneath = 0
         
@@ -17,7 +18,7 @@ class Player(Movable):
         # of movement when a movement button is held
         self.frameCount = 0
         
-        Movable.__init__(self, col, row, SOUTH, grid, player)
+        Movable.__init__(self, player, row, col, SOUTH, grid)
         
         self.base = whichBase
         self.enemy = enemy
@@ -47,10 +48,10 @@ class Player(Movable):
         ''' Shoots a bullet in the direction that the 
         player is currently facing. '''
         
-        col, row = self.handleDirection(self.direction)
+        row, col = self.handleDirection(self.direction)
         
         # Create the bullet (it adds itself to the bullet list)
-        bullet = Bullet(col, row, self.direction, self.grid, self)
+        bullet = Bullet(row, col, self.direction, self.grid, self)
         
         self.decreaseEnergy(SHOOTING_ENERGY_DECREASE)
         
@@ -125,9 +126,9 @@ class Player(Movable):
         
         self.setDirection(direction)
     
-        col, row = self.handleDirection(direction)
+        row, col = self.handleDirection(direction)
         
-        nextObj = self.grid.get(col, row)
+        nextObj = self.grid.get(row, col)
 
         # The tank is tunneling through dirt
         if nextObj.getType() == DIRT:
@@ -135,7 +136,7 @@ class Player(Movable):
 
         # The tank can move freely
         if nextObj.getType() in MOVABLES:
-            self.grid.moveObj(self, col, row) 
+            self.grid.moveObj(self, row, col) 
             
     def setUnderneath(self, obj):
         ''' As soon as the player moves on to a specific
@@ -181,7 +182,7 @@ class Player(Movable):
             self.frameCount = 0
             pressed = pygame.key.get_pressed()
             if pressed[self.controls[NORTH]] == 1:
-                self.move(NORTH)   
+                self.move(NORTH)  
             if pressed[self.controls[SOUTH]] == 1:
                 self.move(SOUTH)
             if pressed[self.controls[EAST]] == 1:

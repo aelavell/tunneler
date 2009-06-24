@@ -1,0 +1,24 @@
+for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        done = True
+                    if event.key == K_w:
+                        self.player1.move(NORTH) 
+                    if event.key == K_s:
+                        self.player1.move(SOUTH)
+                    if event.key == K_d:
+                        self.player1.move(EAST)
+                    if event.key == K_a:
+                        self.player1.move(WEST)
+                    if event.key == K_SPACE:
+                        self.player1.shoot()
+                    if event.key == K_UP:
+                        self.player2.move(NORTH)
+                    if event.key == K_LEFT:
+                        self.player2.move(WEST)
+                    if event.key == K_RIGHT:
+                        self.player2.move(EAST)
+                    if event.key == K_DOWN:
+                        self.player2.move(SOUTH)
+                    if event.key == K_RCTRL:
+                        self.player2.shoot()

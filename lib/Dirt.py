@@ -1,9 +1,12 @@
+import pygame
+from pygame.locals import *
+
 from Constants import *
 from Object import *
 
 class Dirt(Object):
-    def __init__(self, col, row, grid):
-        Object.__init__(self, col, row, DIRT)
+    def __init__(self, row, col, grid):
+        Object.__init__(self, DIRT, row, col)
         self.health = DIRT_HEALTH
         self.grid = grid
 

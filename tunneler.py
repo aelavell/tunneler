@@ -3,6 +3,7 @@ import sys
 # of the program
 root = sys.path[0]
 sys.path.append(root + "/lib")
+
 from Game import *
 	   
 if __name__ == "__main__":

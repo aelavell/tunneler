@@ -1,9 +1,17 @@
+from pygame.locals import *
+
+SCREEN_HEIGHT = 475
+SCREEN_WIDTH = 850
+
+
 MAX_FPS = 30
 DISPLAY_SIZE = 11
 GRID_SIZE = 300
 DIRT_HEALTH = 3
 # should always be an odd number > 1, so that base entrances line up
 BASE_SIZE = 5
+
+PIXELS_PER_UNIT =  (SCREEN_HEIGHT - 100) / DISPLAY_SIZE
 
 # Health / Energy
 MAX_HEALTH = 100
@@ -15,16 +23,16 @@ AWAY_ENERGY_INCREASE_TIME = 1 * MAX_FPS
 ENERGY_DECREASE_TIME = 3 * MAX_FPS
 SHOOTING_ENERGY_DECREASE = .1
 
-P1 = '@'
-B1 = '#'
-P2 = '$'
-B2 = '&'
+P1 = 'p1'
+B1 = 'b1'
+P2 = 'p2'
+B2 = 'b2'
 DIRT = 'd'
-EMPTY  = '.'
+EMPTY  = 'e'
 FOG = 'f'
-V_WALL = '|'
-H_WALL = '-'
-BULLET = '*'
+V_WALL = 'vw'
+H_WALL = 'hw'
+BULLET = 'b'
 
 NORTH = 'n'
 EAST = 'e'
@@ -45,4 +53,8 @@ BASES = [B1, B2]
 # append debugging errors to this to get printed by viewport
 error = []
 DEBUG = True
+
+# Controls
+P1_CONTROLS  = {NORTH: K_w, SOUTH: K_s, EAST: K_d, WEST: K_a, 'SHOOT': K_SPACE}
+P2_CONTROLS = {NORTH: K_UP, SOUTH: K_DOWN, EAST: K_RIGHT, WEST: K_LEFT, 'SHOOT': K_RCTRL}
 

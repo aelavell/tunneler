@@ -1,5 +1,6 @@
 import sys, os
 from Grid import *
+from Basic import *
 from Object import *
 from Movable import *
 from Player import *
@@ -11,7 +12,7 @@ class Game():
     def __init__(self):
         # Required to get pygame's event handling
         pygame.init()
-        screen = pygame.display.set_mode((1, 1))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.mouse.set_visible(0)
         self.clock = pygame.time.Clock()
         #pygame.event.set_grab(True)
@@ -20,25 +21,15 @@ class Game():
         self.grid.addBase(B1, 10, 10)  
         self.grid.addBase(B2, 3, 4)
         
-        p1Controls = {NORTH: K_w, SOUTH: K_s, EAST: K_d, WEST: K_a, 'SHOOT': K_SPACE}
-        p2Controls = {NORTH: K_UP, SOUTH: K_DOWN, EAST: K_RIGHT, WEST: K_LEFT, 'SHOOT': K_RCTRL}
-        
         self.player1 = Player(5, 6, self.grid, P1, P2, B1, B2)
         self.player2 = Player(12, 12, self.grid, P2, P1, B2, B1)
-        self.player1.setControls(p1Controls)
-        self.player2.setControls(p2Controls)
+        self.player1.setControls(P1_CONTROLS)
+        self.player2.setControls(P2_CONTROLS)
         self.players = [self.player1, self.player2]
         
         self.vp1 = Viewport(self.grid, self.player1)
         self.vp2 = Viewport(self.grid, self.player2)
         self.viewports = [self.vp1, self.vp2]
-        
-    def clearScreen(self):
-        if os.name == 'posix':
-            os.system('clear')
-        elif os.name in ("nt", "dos", "ce"):
-            # DOS/Windows
-            os.system('CLS')
             
     def startGame(self):
         ''' Starts the game. '''
@@ -55,8 +46,6 @@ class Game():
         
         # Main game loop
         while self.gameOn:
-            self.clearScreen()
-
             for player in self.players:
                 player.update()
                 
@@ -66,13 +55,13 @@ class Game():
                 for bullet in player.getBullets():
                     bullet.move()
                 
+            x = 0
             for viewport in self.viewports:
                 # Display everything
-                viewport.display()
-                viewport.HUD()
-                if DEBUG == True:
-                    for e in error:
-                        print e
+                viewport.createSprites()
+                viewport.updateDisplay()
+                self.screen.blit(viewport.getDisplay(), (x, 0))
+                x += 425
             
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
@@ -81,7 +70,5 @@ class Game():
             
             # keep the game running at the right speed
             self.clock.tick(MAX_FPS)
-
-        # The game's over, clear the terminal
-        #self.clearScreen()
+            pygame.display.flip()
         

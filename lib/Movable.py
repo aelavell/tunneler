@@ -1,3 +1,6 @@
+import pygame
+from pygame.locals import *
+
 from Object import *
 
 class Movable(Object):
@@ -6,13 +9,13 @@ class Movable(Object):
     movable objects. The actual move() method is left 
     up to the particular object. '''
 
-    def __init__(self, col, row, direction, grid, type):
-        Object.__init__(self, col, row, type)
+    def __init__(self, type, row, col, direction, grid):
+        Object.__init__(self, type, row, col)
         self.setGrid(grid)
         
         # Set the player on the grid, and get 
         # whatever is initially underneath the object
-        under = grid.set(self, col, row)
+        under = grid.set(self, row, col)
         self.setUnderneath(under)
         
         self.setDirection(direction)
@@ -54,10 +57,14 @@ class Movable(Object):
         return self.underneath
     
     def handleDirection(self, direction):
-        ''' Common task. '''
+        ''' Translates a direction string such as "north"
+        to a tangible change in row and column. Takes the
+        objects' current row and column as a baseline,
+        but does NOT change them directly. Returns the
+        modified row and column instead. '''
         
-        col = self.col
         row = self.row
+        col = self.col
         
         if direction == NORTH:
             row -= 1
@@ -68,4 +75,4 @@ class Movable(Object):
         elif direction == SOUTH:
             row += 1
             
-        return col, row
+        return row, col
