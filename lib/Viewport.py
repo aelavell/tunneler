@@ -13,6 +13,8 @@ class Viewport():
         self.player = player
         self.surf = pygame.Surface((375, SCREEN_HEIGHT))
         self.sprites = pygame.sprite.Group()
+        pygame.font.init()
+        self.font = pygame.font.Font(None, FONT_SIZE)
         
     def HUD(self):
         ''' The HUD (Heads-Up Display) shows off the player's
@@ -46,6 +48,10 @@ class Viewport():
         self.sprites.update()
         self.surf.fill((0,0,0))
         self.sprites.draw(self.surf)
+        health = pygame.font.Font.render(self.font, "Health: %s" %self.player.getHealth(), FONT_SIZE, (255,255,255))
+        energy = pygame.font.Font.render(self.font, "Energy: %s" %self.player.getEnergy(), FONT_SIZE, (255,255,255))
+        self.surf.blit(health, (0, 375))
+        self.surf.blit(energy, (0, 425))
             
     def getDisplay(self):
         return self.surf
