@@ -13,9 +13,14 @@ class Bullet(Movable):
   
         self.player.addBullet(self)
         
-        # The bullet starts ON a collidable
-        if self.underneath.getType() in COLLIDABLES:
-            self.collide(self.underneath)
+        # The bullet starts on the grid
+        if self.underneath:
+            # The bullet starts ON a collidable
+            if self.underneath.getType() in COLLIDABLES:
+                self.collide(self.underneath)
+        # The bullet is fired immediately off the grid
+        else:
+            self.player.removeBullet(self)
             
     def move(self):
         ''' The bullet will move straight until it collides with
@@ -24,17 +29,19 @@ class Bullet(Movable):
         row, col = self.handleDirection(self.direction)
             
         nextObj = self.grid.get(row, col)
-        
-        if nextObj.getType() in COLLIDABLES:
-            # This needs to happen, because when the player
-            # shoots and moves at the same time he will
-            # step on his bullet immediately after he shoots
-            # it. This is an easy way around it
-            if nextObj != self.player:
-                self.collide(nextObj)
+        if nextObj:
+            if nextObj.getType() in COLLIDABLES:
+                # This needs to happen, because when the player
+                # shoots and moves at the same time he will
+                # step on his bullet immediately after he shoots
+                # it. This is an easy way around it
+                if nextObj != self.player:
+                    self.collide(nextObj)
+            else:
+                # Move on 
+                self.grid.moveObj(self, row, col)
         else:
-            # Move on 
-            self.grid.moveObj(self, row, col)
+            self.die()
             
     def collide(self, object):
         if object.getType() in KILLABLES:

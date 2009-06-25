@@ -15,6 +15,7 @@ class Grid():
     def __init__(self): 
         row = []
         self.grid = []
+        self.fog = Object(FOG, -1, -1)
             
         rowCounter = 0
         # Fill the grid with rows
@@ -77,9 +78,6 @@ class Grid():
             # Set the new one down
             self.grid[row][col] = obj
             return oldObj
-        else:
-            fog = Object(FOG, row, col)
-            return fog
 
     def get(self, row, col):
         ''' Returns the object at the location specified, if
@@ -88,9 +86,6 @@ class Grid():
         
         if self.isInBounds(row, col):
             return self.grid[row][col]
-        else:
-            fog = Object(FOG, row, col)
-            return fog
             
     def isInBounds(self, row, col):
         ''' Encapsulates a boolean test to see whether or not

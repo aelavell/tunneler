@@ -1,8 +1,8 @@
 from pygame.locals import *
 
-DISPLAY_SIZE = 13
+DISPLAY_SIZE = 11
 GRID_SIZE = 30
-DIRT_HEALTH = 3
+DIRT_HEALTH = 2
 # should always be an odd number > 1, so that base entrances line up
 BASE_SIZE = 5
 

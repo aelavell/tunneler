@@ -131,12 +131,13 @@ class Player(Movable):
         nextObj = self.grid.get(row, col)
 
         # The tank is tunneling through dirt
-        if nextObj.getType() == DIRT:
-            nextObj.decrementHealth()
-
-        # The tank can move freely
-        if nextObj.getType() in MOVABLES:
-            self.grid.moveObj(self, row, col) 
+        if nextObj:
+            if nextObj.getType() == DIRT:
+                nextObj.decrementHealth()
+    
+            # The tank can move freely
+            if nextObj.getType() in MOVABLES:
+                self.grid.moveObj(self, row, col) 
             
     def setUnderneath(self, obj):
         ''' As soon as the player moves on to a specific

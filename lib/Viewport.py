@@ -36,8 +36,9 @@ class Viewport():
             col = self.player.getCol() - (DISPLAY_SIZE / 2)
             while col <= maxCol:
                 sprite = self.grid.get(row, col)
-                sprite.setPosition(colCount * PIXELS_PER_UNIT, rowCount * PIXELS_PER_UNIT)
-                self.sprites.add(sprite)
+                if sprite:
+                    sprite.setPosition(colCount * PIXELS_PER_UNIT, rowCount * PIXELS_PER_UNIT)
+                    self.sprites.add(sprite)
                 col += 1
                 colCount += 1              
                 
@@ -46,7 +47,7 @@ class Viewport():
             
     def updateDisplay(self):
         #self.sprites.update()
-        self.surf.fill((0,0,0))
+        self.surf.fill((0,0,255))
         self.sprites.draw(self.surf)
         health = pygame.font.Font.render(self.font, "Health: %s" %self.player.getHealth(), FONT_SIZE, (255,255,255))
         energy = pygame.font.Font.render(self.font, "Energy: %s" %self.player.getEnergy(), FONT_SIZE, (255,255,255))
