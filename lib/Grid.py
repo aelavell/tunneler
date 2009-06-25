@@ -1,5 +1,4 @@
 import copy
-from Basic import *
 from Constants import *
 from Player import *
 from Object import *

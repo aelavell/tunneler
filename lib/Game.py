@@ -61,7 +61,7 @@ class Game():
                 viewport.createSprites()
                 viewport.updateDisplay()
                 self.screen.blit(viewport.getDisplay(), (x, 0))
-                x += 425
+                x += 356
             
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
@@ -70,6 +70,6 @@ class Game():
                         sys.exit()
             
             # keep the game running at the right speed
-            self.clock.tick(MAX_FPS)
+            #self.clock.tick(MAX_FPS)
             pygame.display.flip()
         

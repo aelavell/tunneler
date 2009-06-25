@@ -11,7 +11,7 @@ class Viewport():
     def __init__(self, grid, player):
         self.grid = grid
         self.player = player
-        self.surf = pygame.Surface((375, SCREEN_HEIGHT))
+        self.surf = pygame.Surface((VP_WIDTH, VP_HEIGHT))
         self.sprites = pygame.sprite.Group()
         pygame.font.init()
         self.font = pygame.font.Font(None, FONT_SIZE)
@@ -27,16 +27,16 @@ class Viewport():
         ''' Displays a view centered on the player.'''
         
         self.sprites.empty()
-        rowCount = 1
+        rowCount = 0
         row = self.player.getRow() - (DISPLAY_SIZE / 2)
         maxRow = self.player.getRow() + (DISPLAY_SIZE / 2)
         maxCol = self.player.getCol() + (DISPLAY_SIZE / 2)
         while row <= maxRow:
-            colCount = 1
+            colCount = 0
             col = self.player.getCol() - (DISPLAY_SIZE / 2)
             while col <= maxCol:
                 sprite = self.grid.get(row, col)
-                sprite.setPosition(colCount * PIXELS_PER_UNIT / 2, rowCount * PIXELS_PER_UNIT / 2)
+                sprite.setPosition(colCount * PIXELS_PER_UNIT, rowCount * PIXELS_PER_UNIT)
                 self.sprites.add(sprite)
                 col += 1
                 colCount += 1              
@@ -45,13 +45,13 @@ class Viewport():
             rowCount += 1
             
     def updateDisplay(self):
-        self.sprites.update()
+        #self.sprites.update()
         self.surf.fill((0,0,0))
         self.sprites.draw(self.surf)
         health = pygame.font.Font.render(self.font, "Health: %s" %self.player.getHealth(), FONT_SIZE, (255,255,255))
         energy = pygame.font.Font.render(self.font, "Energy: %s" %self.player.getEnergy(), FONT_SIZE, (255,255,255))
-        self.surf.blit(health, (0, 375))
-        self.surf.blit(energy, (0, 425))
+        self.surf.blit(health, (0, 325))
+        self.surf.blit(energy, (0, 365))
             
     def getDisplay(self):
         return self.surf

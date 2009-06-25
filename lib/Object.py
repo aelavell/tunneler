@@ -36,18 +36,19 @@ class Object(pygame.sprite.Sprite):
     def getCol(self):
         return self.col
 	
-    def setPosition(self, x, y):
+    def setPosition(self, topLeftX, topLeftY):
         ''' Position is the object's position as far
         as pygame is concerned, pixel-wise. '''
         
-        self.position = (x, y)
-        self.rect.center = self.position
+        self.position = (topLeftX, topLeftY)
+        self.rect.topleft = self.position
         
     def getPosition(self):
         return self.position
     
     def setImage(self, imageFileName):
-        self.image, self.rect = imageLoad("%s.png" %imageFileName)
+        self.image = imageLoad("%s.png" %imageFileName)
+        self.rect = self.image.get_rect()
     
     def getImage(self):
         return self.image

@@ -1,6 +1,6 @@
 from pygame.locals import *
 
-DISPLAY_SIZE = 11
+DISPLAY_SIZE = 13
 GRID_SIZE = 30
 DIRT_HEALTH = 3
 # should always be an odd number > 1, so that base entrances line up
@@ -8,10 +8,12 @@ BASE_SIZE = 5
 
 # Pygame-related
 MAX_FPS = 30
-SCREEN_HEIGHT = 475
-SCREEN_WIDTH = 850
-FONT_SIZE = 20
-PIXELS_PER_UNIT =  34
+VP_WIDTH = 312
+VP_HEIGHT = 400
+SCREEN_HEIGHT = 400
+SCREEN_WIDTH = 666
+FONT_SIZE = 40
+PIXELS_PER_UNIT = 24
 
 # Health / Energy
 MAX_HEALTH = 100
