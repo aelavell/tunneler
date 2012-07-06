@@ -1,0 +1,240 @@
+Documentation
+
+---- DESCRIPTION OF THE PROBLEM ----
+Tunneler is a grid-based tank game where two players compete head-to-head over a network. 
+There are two randomly-placed bases, one for each tank (player). Surrounding these bases is a grid of dirt. The objective of 
+the game is to find the other player and destroy him, while preserving your own existence. 
+The dirt can be tunnelled through, either by just moving towards it, or
+shooting it. Your tank has both health, and energy. When either one of these falls to zero, you die, and the other player is 
+victorious. You lose energy by shooting - each time you shoot, it drains a certain amount of energy. You also lose energy by being
+outside of your base. Every moment that you're outside of your base, you're getting closer towards losing another point of energy.
+You regain energy in your base, and in the enemy's base. You lose health by getting shot by the other player. You regain health
+in your own base, but not in the other player's base.
+
+The game happens in real time, and thus the 
+network must provide reasonably fast response times, as well as keeping both clients up-to-date with accurate information about the
+state of the game. There should never be a situation where one client has game state info that is different from the other client.
+
+---- OVERVIEW OF IMPLEMENTATION ----
+The implementation is an attempt to make sure that a few major issues are resolved cleanly and robustly. It uses a Client-Server 
+model, where ALL of the game processing happens on the server, and the client merely sends input, receives output, and displays
+the results. This model was chosen to ensure that the state of the game would be controlled in one place, so that it could be
+easily kept consistent across all clients. It also sends very little information across the wire, only sending changes to
+the gamestate instead of the state of the entire grid.
+
+- CLIENT INITIALIZATION
+When there is no game happening, the server sits around and waits for new TCP connections. It will let anything connect that
+tries to connect. What is pivotal is the first little bit of information that the client sends after connecting. If the
+client doesn't send the string Tunneler1.0; as its first message after connecting, the Server will assume that it is not
+an actual Tunneler client, but just something that has connected to that IP and port number without necessarily knowing what
+was there. The server simply closes its connection with any clients that send anything other than the specified string as their
+first message.
+
+After the server has received the initialization string, it waits for the client to indicate that it is ready to play a game.
+The client does so by sending a message with the GAME_START_CODE in it (command codes will be discussed later)
+Once two connected clients have indicated that they are ready to play, the game starts immediately. The server assigns the 
+first client that was ready as the player with id 1, the green player. The second client gets id 2, blue. The server sends the 
+size of the grid, the randomly generated positions of both bases, and the player id as the game initialization information.
+These are the only variables the Client needs to set itself up properly.
+
+- GAME STATE SYNCHRONIZATION
+The game uses a lockstep model to keep everything running smoothly. Both the server and the client maintain their own timestep
+variables, which are kept in sync throughout the game. The timestep starts at 0. Timesteps are incremented only when the server
+has received input from both clients. 
+
+A basic game turn looks like this:
+
+1. The server sits idle, waiting for input from both clients. 
+2. It receives input from one of the clients. This input contains some commands, like whether the player wants to move or shoot. 
+At the end of the message is the timestep that the client is at. If the timestep is wrong, the server won't accept the message.
+3. The server parses the commands from the client, and continues to wait for input from the other client.
+4. The other client sends input, and the server parses that. Now that it has the commands from both clients.
+5. The server runs the commands, changing the internal state of the game. Any time a method changes the gamestate, it returns a
+change message, which tells the client exactly what has changed. This change is appended to a list of changes for the entire 
+current timestep. Once all of the changes have taken place for the timestep, the server sends the list of changes to both 
+clients, and increments the timestep variable. The process starts all over again.
+
+Commands are not the only things that cause changes. When a player shoots, he spawns a bullet, which is no longer directly under
+his control. The bullet continues to move, at the rate of 2 units per timestep (twice as fast as a tank can move), until it hits
+an object on the grid or runs off the grid entirely. Each bullet that is spawned is assigned a unique id. While a bullet exists,
+the server keeps it moving, logging the changes and sending them to the client. 
+
+- THE IMMOBILE vs. MOBILE GRID
+The game is composed of objects that can move and objects that can't. 
+
+MOBILE OBJECTS
+- Player 1
+- Player 2
+- Bullet
+
+IMMOBILE OBJECTS
+- Dirt 
+- Empty
+- Base 1
+- Base 2 
+
+It can be entirely represented in a rectangular grid, which
+could be implemented in python using a single large nested list, mobile objects and immobile. A problem that arises if we 
+try to do it this way, is that when a mobile object moves OVER an immobile object, that object would be overwritten in 
+the internal Grid representation, and would have to be stored temporarily, only to be reinserted to the grid after the
+mobile object had moved away.
+
+To avoid such hassles, I represented the immobile objects on the Grid using a class (called Grid), which internally stores
+everything in a list. On top of that, there are player and bullet objects, each of which has a unique id that identifies it.
+I didn't bother assigning ids to the immobile objects, as they are accurately addressed using their position on the grid,
+which by definition cannot change.
+
+CLIENT INFORMATION COLLECTION AND TIMESTEP TIMEOUT
+As described above, the Server waits for BOTH clients to send their input before the next timestep in the game can occur. 
+In a world where both player was issuing commands every possible moment, until the very end of the game, this would work
+fine without any sort of forcing of timesteps to occur. However, a player may not enter their input for an arbitrarily long
+time, and if nothing is done about this, then the game would simply stall until both players had given their input for a 
+particular timestep. This would work for a turn-based game, but Tunneler is real time!
+
+Because we don't want the game to stall, I implemented a simple timeout variable on each client which forces the submission
+of commands. The client simply collects input, and then sends it off as input for the current timestep when the timeout occurs.
+This is something that almost certainly should have been implemented on the server, and NOT on the client, but
+in the interests of getting this project done on time, I programmed it into client. Discussed in the POSTMORTEM below.
+
+COMMAND MESSAGE FORMAT
+Here's an example command message:
+
+10.0;
+
+The leftmost digit can be 1 of 5 values, and represents the movement part of the command:
+
+0 - no change
+1 - move left
+2 - move right
+3 - move up
+4 - move down
+
+The digit to the right of that is the shoot part, and can be either:
+
+0 - FALSE
+1 - TRUE
+
+The number after the period is the timestep. A few more examples:
+ 
+21.2354;    # move right and shoot at timestep 2354
+30.235768;  # move up at timestep 235768
+00.3;		# do nothing at timestep 3
+
+You may notice that I used a fairly large number as a timestep example. Arbitrarily large timesteps are a potential problem that I will
+discuss in the POSTMORTEM  below.
+
+CHANGE MESSAGE FORMAT
+Change messages are more complicated than command messages. They are of variable length, and all get strung together to represent 
+ALL of the changes that happened in a particular timestep. Here are all of the codes to identify the change in question, 
+which are defined in the Constants.py file:
+
+SET_HEALTH_CODE = 10
+SET_ENERGY_CODE = 12
+MOBILE_DIE_CODE = 14
+MOBILE_MOVE_CODE = 15   
+MOBILE_DIRECTION_CODE = 16
+MOBILE_SPAWN_CODE = 17
+DIRT_LOSE_HEALTH_CODE = 18
+DIRT_DIE_CODE = 19
+GAME_OVER_CODE = 20
+GAME_START_CODE = 21
+BAD_COMMAND_CODE = 22 
+BAD_TIMESTEP_CODE = 23
+RESEND_CODE = 24 
+
+Change messages have the following format:
+
+change_code.arg0.arg1.argN,change_code.arg0.arg1.argN,timestep;
+
+This would be for two changes occuring in a timestep. Here's an actual example:
+
+15.2.54.14,12.2.93,17.20.55.14,15.20.56.14,12.2.94,192;
+
+Each of the changes has a variable number of arguments. The MOBILE_MOVE change, which is 15, looks like this:
+
+15.2.54.14,
+
+Its arguments are: 
+- The id of the mobile object to move
+- The row to move the object to
+- The column to move the object to
+
+That's it! The server simply sends these strings changes and the client breaks them up and parses them, giving meaning to the arguments
+by applying them in the correct places.
+
+GUI
+The graphics are done entirely on the Client side, using a library named Pygame. The graphics logic is simple - on each update of the
+screen, it goes through all of the objects in the grid that are close to the player. It renders them, using their position in the grid
+as a basis as to where to put them on the screen. There are a couple of problems with the system, which will be discussed in the postmortem,
+namely that the player could change the number of units that the screen displays at a time and thus have a better view than the other player,
+and also that everything is redrawn every frame.
+
+GAME OVER
+When one of the players dies, or closes his client, or disconnects for any reason, the current running game is ended immediately and a
+game over message is sent to all of the clients which are still connected. This message contains info on who lost (and thus necessarily 
+who won). Both clients display a game over screen, saying either VICTORY or DEFEAT. The Server returns to a state of waiting for clients 
+to connect and ready themselves for another game, which it then creates. The current instances of the clients are now finished as far
+as they are concerned. Their only option at this point is to press Escape and close the program. They can open a new instance of the client
+to play another game if they would like.
+
+---- POSTMORTEM (Analysis of Results) ----
+Overall, I'm very happy with how the project turned out. I've tested the client on several machines, running Windows, Linux, and OS X. 
+I've tested the server on Linux and OS X but not on Windows. Each time I played it over a LAN connection, it ran smoothly and with response times similar
+to just running the Server and two Clients on the same machine. There's really not much information being sent over the network at all,
+just a few changes here and there. The initialization of the game is even quite simple, and requires only a few variables to be 
+sent across the network. 
+
+ARBITRARILY-LARGE TIMESTEPS
+A potential problem in the game is that the timestep int would max out. 
+Currently there's no modulo arithmetic happening to stop this from being a possibility. In the edge case where a game
+runs for long enough for timesteps to get huge, the program relies on the fact that Python allows for arbitrarily large numbers. This,
+of course, is not the optimal solution, as it requires more and more memory space on all of the computers involved, and it also
+has the potential to significantly lengthen messages passed across the network.
+
+CLIENT-SIDE TIMEOUTS
+As long as the variable is set to the same value on both clients and they are running at reasonable speeds, the game will run fine. 
+This opens up the possibility, however, since this is a python script game, to edit this variable, and have a quicker timeout,
+or a longer timeout which could stall the game, even practically indefinitely. This obviously would be a glaring problem if 
+I were to attempt to release this game and have lots of untrusted users playing.
+
+CHEATING
+Since the game is released as source code, with a lot of important variables being local to the client, players could easily cheat.
+They could change the number of units displayed on the viewport, giving them a larger than standard view. They could mess with the
+timeout system. There are things that wouldn't have any effect on the main game logic though, such as attempts to change the maximum
+amount of health that they could have or the amount of damage their bullets do. This is all calculated on the server, and what
+the Client shows is merely a representation of what the server tells it to show. So none of this logic can be touched.
+
+SCALING TO MORE PLAYERS
+Currently, some of the parts of the code are written specifically to deal with two players and two players only. With some code refactoring,
+the game could likely be scaled to support more players simultaneously without too much hassle. Most of the game logic isn't hard to fix
+in the code. The bigger issue would be performance, and it could possibly make the little things like client-side timeouts into even bigger problems.
+Also, the more players there are, the longer the change messages across the network would become, which could potentially slow things down if 
+they grew too large.
+
+In short, it can be done fairly easily, but it would require some rethinking, and has the potential to make some of the bigger problems
+into major showstoppers.
+
+LOBBY SYSTEM AND VARIABLE TWEAKING
+Ideally I wanted to have a lobby system, where all of the clients that were connected to the server could chat and get ready to play 
+games. On top of that, they would be able to agree on variables such as the size of the grid, and maybe even tweak details like the
+amount of damage their weapons do, how much energy shooting costs, etc. Under the time constraints, however, these initial ideas
+were scrapped in the interest of finishing the project. But a lobby and a client that doesn't shut down its connection immediately
+after the game has ended would certainly be conducive to longer playing sessions.
+
+Also, the server could potentially serve multiple games at once. With the way that it's written, it's a simple matter to instantiate
+another Game class, and get some more games going on.
+
+CODING ABSTRACTION
+There are always some breaks in the models that you plan out for programs, as your initial ideas about how something might work
+evolve into the final form of the implementation. Along the way, things have a tendency to get... messy. 
+
+ADDING TO GAMEPLAY
+The underground can be a lonely place. With only one other player in an arbitrarily large grid, the games are often 99% digging around 
+and then you suddenly run into each other and one of you is destroyed. I'd like to add some more incentive to exploration, such as 
+randomly generated rooms that had special items that you could collect, and things like that. Also, the original tunneler has 8
+directions of movement, which I changed to 4 for simplicity's sake, but adding those last 4 could definitely do a lot to make the
+game more dynamic. 
+
+---- CONCLUSION ----
+Making this game is something that I've wanted to do since first year university. It's quite satisfying to have finally gotten around 
+to it. The system I've implemented isn't perfect, but it works quite well. The game is fun, surprisingly smooth, and ready to be expanded.
