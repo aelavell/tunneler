@@ -1,0 +1,4 @@
+*.pyc
+# Allan this is from you editor
+# You should add this to your global gitignore
+*.tmproj

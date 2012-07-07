@@ -95,8 +95,12 @@ class Server(asyncore.dispatcher):
 if __name__ == "__main__":
     if len(sys.argv) >= 3:
         s = Server(sys.argv[1], int(sys.argv[2]))
+        print "Server up. Address is: ",sys.argv[1],":",sys.argv[2]
     else:
         c = Server('localhost', 61673)
-
+        print "Server up. Address is: localhost:61673 (default)"
+    
+    print "Will now wait for clients."
     asyncore.loop()
+
 
