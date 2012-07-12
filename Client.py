@@ -244,6 +244,9 @@ class Client(asynchat.async_chat):
             keydown = False
             
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    print "Exiting"
+                    self.exit()
                 if event.type == KEYDOWN:
                     keydown = event.key
                     if event.key == LEFT_KEY:
@@ -263,6 +266,7 @@ class Client(asynchat.async_chat):
                             self.shotAtStep = self.timestep
                             shootPart = "%d" % SHOOT
                     elif event.key == K_ESCAPE:
+                        print "Escape key pressed"
                         self.exit()
           
             key = pygame.key.get_pressed()
@@ -333,10 +337,15 @@ class Client(asynchat.async_chat):
         '''
         titleScreenImage = imageLoad("TitleScreen.png")
         breakLoop = False
+        c = 0
         while not breakLoop:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    print "Exiting"
+                    self.exit()
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
+                        print "Escape key pressed"
                         self.exit()
                     if event.key == K_RETURN:
                         self.indicateReadiness()
@@ -374,8 +383,12 @@ class Client(asynchat.async_chat):
         
         while True:
             for event in pygame.event.get():
-                if event.type == KEYDOWN:
+                if event.type == pygame.QUIT:
+                    print "Exiting"
+                    self.exit()
+                elif event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
+                        print "Escape key pressed"
                         self.exit()
 
     def indicateReadiness(self):
